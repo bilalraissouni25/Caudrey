@@ -220,11 +220,63 @@
     <section id="studio" class="view">
       <div class="vhead"><h2 class="serif">3 &middot; Studio design</h2><p>Compose un vêtement paramétrique, ou dessine librement n'importe quelle idée.</p></div>
       <div class="seg" id="studioMode">
-        <button class="on" data-s="compose">Composer</button>
-        <button data-s="draw">Retoucher (croquis)</button>
+        <button class="on" data-s="composer">Composer (éléments)</button>
+        <button data-s="compose">Gabarit paramétrique</button>
+        <button data-s="draw">Dessiner</button>
       </div>
 
-      <div id="studioCompose">
+      <div id="studioComposer">
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;">
+            <div><label class="fld">Couleur de la sélection</label><div style="display:flex;gap:8px;align-items:center;"><input id="cmpColor" type="color" value="#9c5d7c" style="height:36px;width:52px;padding:3px;"><div id="cmpPalette" style="display:flex;gap:6px;"></div></div></div>
+            <div style="flex:1;min-width:220px;"><label class="fld">Imprimé sur la sélection</label><div class="seg" id="cmpPrint" style="margin:0;"><button class="on" data-p="uni">Uni</button><button data-p="pois">Pois</button><button data-p="rayures">Rayures</button><button data-p="fleuri">Fleuri</button></div></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+            <button class="btn ghost sm" onclick="cmpForward()">Avancer</button>
+            <button class="btn ghost sm" onclick="cmpBackward()">Reculer</button>
+            <button class="btn ghost sm" onclick="cmpDuplicate()">Dupliquer</button>
+            <button class="btn ghost sm" onclick="cmpDelete()">Supprimer</button>
+            <button class="btn ghost sm" onclick="cmpAddText()">+ Texte</button>
+            <button class="btn ghost sm" onclick="cmpClear()">Tout effacer</button>
+            <button class="btn ghost sm" onclick="motifToggle()">Motif génératif (p5)</button>
+          </div>
+        </div>
+        <div id="motifPanel" class="card" style="display:none;margin-bottom:14px;">
+          <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;">
+            <div><label class="fld">Style</label><select id="motifStyle"><option value="pois">Pois</option><option value="rayures">Rayures</option><option value="chevrons">Chevrons</option><option value="fleuri">Fleuri</option><option value="geo">Géométrique</option><option value="organique">Organique</option><option value="confetti">Confetti</option></select></div>
+            <div><label class="fld">Fond</label><input id="motifC1" type="color" value="#f3e7ee" style="height:36px;width:50px;padding:3px;"></div>
+            <div><label class="fld">Motif</label><input id="motifC2" type="color" value="#9c5d7c" style="height:36px;width:50px;padding:3px;"></div>
+            <div style="min-width:150px;"><label class="fld">Densité · <span id="motifDOut">5</span></label><input id="motifDensity" type="range" min="2" max="12" value="5" style="width:100%;"></div>
+            <button class="btn ghost sm" onclick="motifGen()">Régénérer</button>
+          </div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:12px;">
+            <canvas id="motifPreview" width="120" height="120" style="border:1px solid var(--line);border-radius:8px;width:120px;height:120px;"></canvas>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn sm" onclick="motifApplySel()">Appliquer à la sélection</button>
+              <button class="btn ghost sm" onclick="motifAddBg()">Ajouter comme fond</button>
+            </div>
+          </div>
+        </div>
+        <div class="grid" style="grid-template-columns:240px minmax(0,1fr);gap:18px;align-items:start;">
+          <div class="card" style="padding:14px;">
+            <div class="seg" id="cmpCat" style="margin:0 0 10px;flex-wrap:wrap;"></div>
+            <div id="cmpElements" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+          </div>
+          <div>
+            <div class="draw-wrap" style="min-height:0;padding:10px;"><canvas id="fabCanvas" width="480" height="620" style="max-width:100%;border-radius:8px;"></canvas></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+              <button class="btn sm" onclick="cmpSave()">Enregistrer le design</button>
+              <button class="btn ghost sm" onclick="cmpToCarnet()">Au carnet</button>
+              <button class="btn ghost sm" onclick="cmpRenderAI()">Rendu réaliste (IA)</button>
+            </div>
+            <div class="row" style="margin-top:10px;"><div style="flex:3;"><input id="cmpPrompt" type="text" placeholder="Décris la pièce pour le rendu IA (tissu, ambiance, occasion...)"></div></div>
+            <div id="cmpAiOut" style="margin-top:12px;"></div>
+          </div>
+        </div>
+        <p class="muted" style="font-size:13px;margin-top:12px;">Clique un élément pour l'ajouter, déplace / redimensionne / pivote à la souris, recolore la sélection, superpose les calques. Aucune compétence en dessin requise.</p>
+      </div>
+
+      <div id="studioCompose" style="display:none;">
         <div class="studiogrid">
           <div class="card">
             <div class="ctl"><label class="fld">Type de vêtement</label>
@@ -308,6 +360,16 @@
       </div>
 
       <div id="patCreer" style="display:none;">
+        <div class="card" style="margin-bottom:16px;background:var(--accent-soft);border:none;">
+          <h3 style="font-size:16px;margin-bottom:6px;">Patron sur mesure — FreeSewing (open-source)</h3>
+          <p class="muted" style="font-size:13px;margin:0 0 12px;">Génère un vrai patron à partir de tes mesures (onglet Mon profil), directement dans le navigateur.</p>
+          <div class="row">
+            <div><label class="fld">Modèle</label><select id="fsDesign"><option value="aaron">Aaron — débardeur</option><option value="teagan">Teagan — t-shirt</option><option value="sven">Sven — sweat</option><option value="hugo">Hugo — sweat à capuche</option><option value="holmes">Holmes — cagoule</option></select></div>
+            <div style="flex:0 0 auto;display:flex;align-items:flex-end;"><button class="btn" onclick="fsGenerate()">Générer mon patron</button></div>
+          </div>
+          <div id="fsStatus" class="muted" style="font-size:13px;margin-top:10px;"></div>
+          <div id="fsOut" style="margin-top:12px;border-radius:10px;"></div>
+        </div>
         <div class="card" style="margin-bottom:16px;">
           <div class="row">
             <div><label class="fld">Marge de couture (cm)</label><input id="optSeam" type="number" value="1.5" step="0.5"></div>
@@ -470,6 +532,12 @@
   </main>
 </div>
 <div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 <script src="app.v6.js"></script>
+<script src="app.composer.js"></script>
+<script src="app.patterns.js"></script>
+<script src="app.motifs.js"></script>
+<script src="app.freesewing.js"></script>
 </body>
 </html>
