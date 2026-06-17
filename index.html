@@ -221,7 +221,7 @@
       <div class="vhead"><h2 class="serif">3 &middot; Studio design</h2><p>Compose un vêtement paramétrique, ou dessine librement n'importe quelle idée.</p></div>
       <div class="seg" id="studioMode">
         <button class="on" data-s="compose">Composer</button>
-        <button data-s="draw">Dessin libre</button>
+        <button data-s="draw">Retoucher (croquis)</button>
       </div>
 
       <div id="studioCompose">
@@ -232,7 +232,14 @@
             <div class="ctl"><label class="fld">Silhouette</label><select id="dSil"><option value="droite">Droite</option><option value="evasee">Évasée (trapèze)</option><option value="ajustee">Ajustée</option><option value="ample">Ample / oversize</option></select></div>
             <div class="ctl"><label class="fld">Longueur</label><select id="dLen"><option value="mini">Mini / court</option><option value="genou" selected>Genou</option><option value="midi">Midi</option><option value="long">Long / maxi</option></select></div>
             <div class="ctl" id="dNeckWrap"><label class="fld">Encolure</label><select id="dNeck"><option value="ras">Ras-du-cou</option><option value="v">Col V</option><option value="bateau">Bateau</option><option value="carre">Carré</option></select></div>
-            <div class="ctl" id="dSleeveWrap"><label class="fld">Manches</label><select id="dSleeve"><option value="sans">Sans manche</option><option value="courte" selected>Courte</option><option value="longue">Longue</option><option value="ballon">Ballon</option></select></div>
+            <div class="ctl" id="dSleeveWrap"><label class="fld">Manches</label><select id="dSleeve"><option value="sans">Sans manche</option><option value="courte" selected>Courte</option><option value="longue">Longue</option><option value="ballon">Ballon</option><option value="bishop">Bishop (longue bouffante)</option><option value="flutter">Flutter (volantée)</option></select></div>
+            <div class="ctl" id="dHemWrap"><label class="fld">Style du bas</label><select id="dHem"><option value="simple">Simple</option><option value="asymetrique">Asymétrique</option><option value="volante">Volanté</option><option value="plisse">Plissé</option><option value="portefeuille">Portefeuille / cache-cœur</option></select></div>
+            <div class="ctl"><label class="fld">Taille</label><select id="dWaist"><option value="aucun">Sans marque</option><option value="ceinture">Ceinture</option><option value="noeud">Nœud</option></select></div>
+            <div class="ctl"><label class="fld">Détails</label>
+              <label style="font-size:13px;display:inline-flex;align-items:center;gap:5px;margin-right:12px;"><input type="checkbox" id="dPoches"> poches</label>
+              <label style="font-size:13px;display:inline-flex;align-items:center;gap:5px;margin-right:12px;"><input type="checkbox" id="dBoutons"> boutons</label>
+              <label style="font-size:13px;display:inline-flex;align-items:center;gap:5px;"><input type="checkbox" id="dFente"> fente</label>
+            </div>
             <div class="ctl"><label class="fld">Imprimé</label><div class="seg" id="dPrint" style="margin:0;"><button class="on" data-p="uni">Uni</button><button data-p="pois">Pois</button><button data-p="rayures">Rayures</button><button data-p="fleuri">Fleuri</button></div></div>
             <div class="ctl"><label class="fld">Couleur</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><input id="dColor" type="color" value="#9c5d7c" style="height:38px;width:60px;padding:4px;"><div id="dPaletteQuick" style="display:flex;gap:6px;"></div></div></div>
             <div class="ctl"><label class="fld">Vue</label><div class="seg" id="dViewSeg" style="margin:0;"><button class="on" data-w="devant">Devant</button><button data-w="dos">Dos</button></div></div>
@@ -278,14 +285,13 @@
     <section id="patrons" class="view">
       <div class="vhead"><h2 class="serif">4 &middot; Patrons</h2><p>Repère un patron en scrollant et importe-le, parcours la bibliothèque, ou crée le tien.</p></div>
       <div class="seg" id="patMode">
-        <button class="on" data-m="repere">Mes patrons repérés</button>
-        <button data-m="biblio">Bibliothèque</button>
+        <button class="on" data-m="biblio">Bibliothèque</button>
         <button data-m="creer">Créer mon patron</button>
       </div>
 
-      <div id="patRepere">
+      <div id="patBiblio">
         <div class="card" style="margin-bottom:18px;">
-          <label class="fld">Tu as repéré un patron (lien du patron précis, pas juste le site) ? Colle-le ici :</label>
+          <label class="fld">Repéré un patron en scrollant ? Colle son lien (ou partage-le) — il rejoint ta bibliothèque avec son image :</label>
           <div class="row">
             <div style="flex:3;"><input id="ptUrl" type="url" placeholder="https://...le-patron-exact..."></div>
             <div style="flex:0 0 auto;display:flex;align-items:flex-end;"><button class="btn" onclick="importPattern()">Importer le patron</button></div>
@@ -293,14 +299,10 @@
           <div id="ptStatus" class="muted" style="font-size:13px;margin-top:10px;"></div>
           <div id="ptPreview" style="margin-top:14px;"></div>
         </div>
-        <div class="grid g3" id="patReperedList"></div>
-      </div>
-
-      <div id="patBiblio" style="display:none;">
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
-          <select id="patFType" style="max-width:200px;"><option value="tous">Tous les vêtements</option><option value="robe">Robes</option><option value="jupe">Jupes</option><option value="top">Hauts / tops</option><option value="pantalon">Pantalons</option><option value="manteau">Vestes / manteaux</option><option value="accessoire">Accessoires</option><option value="enfant">Enfant</option></select>
+          <select id="patFType" style="max-width:200px;"><option value="tous">Tous les vêtements</option><option value="repere">Mes patrons repérés</option><option value="robe">Robes</option><option value="jupe">Jupes</option><option value="top">Hauts / tops</option><option value="pantalon">Pantalons</option><option value="manteau">Vestes / manteaux</option><option value="accessoire">Accessoires</option><option value="enfant">Enfant</option></select>
           <select id="patFLevel" style="max-width:200px;"><option value="tous">Tous niveaux</option><option value="Débutant">Débutant</option><option value="Intermédiaire">Intermédiaire</option><option value="Avancé">Avancé</option></select>
-          <span class="muted" style="font-size:12.5px;">Patrons gratuits — le bouton ouvre la source.</span>
+          <span class="muted" style="font-size:12.5px;">Vignettes & infos extraites des sources ; le bouton ouvre le patron.</span>
         </div>
         <div class="grid g3" id="patList"></div>
       </div>
@@ -468,6 +470,6 @@
   </main>
 </div>
 <div class="toast" id="toast"></div>
-<script src="app.v5.js"></script>
+<script src="app.v6.js"></script>
 </body>
 </html>
