@@ -26,19 +26,14 @@
   button{font-family:inherit;cursor:pointer;}
   input,select,textarea{font-family:inherit;font-size:14px;}
   a{color:var(--accent-ink);}
-
   .app{display:flex;min-height:100vh;}
-  .nav{width:234px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--line);
-    padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto;}
+  .nav{width:234px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto;}
   .brand{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding:0 6px;}
-  .brand .dot{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);
-    display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;}
+  .brand .dot{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;}
   .brand h1{font-size:18px;letter-spacing:.2px;}
   .brand small{display:block;font-size:11px;color:var(--muted);font-weight:400;letter-spacing:.5px;text-transform:uppercase;}
   .navsec{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:14px 8px 6px;}
-  .navbtn{display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;
-    text-align:left;padding:9px 12px;border-radius:var(--radius-sm);color:var(--ink);
-    font-size:14.5px;margin-bottom:2px;transition:background .12s;}
+  .navbtn{display:flex;align-items:center;gap:10px;width:100%;border:none;background:none;text-align:left;padding:9px 12px;border-radius:var(--radius-sm);color:var(--ink);font-size:14.5px;margin-bottom:2px;transition:background .12s;}
   .navbtn:hover{background:var(--surface2);}
   .navbtn.active{background:var(--accent-soft);color:var(--accent-ink);font-weight:600;}
   .navbtn .ic{font-size:17px;width:20px;text-align:center;}
@@ -55,18 +50,15 @@
   .vhead{margin-bottom:22px;}
   .vhead h2{font-size:25px;letter-spacing:.2px;}
   .vhead p{color:var(--muted);margin:4px 0 0;font-size:14px;}
-
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
   .grid{display:grid;gap:16px;}
   .g2{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
   .g3{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
-  .g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
   .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;}
   .stat .n{font-size:30px;font-weight:600;line-height:1;}
   .stat .l{font-size:13px;color:var(--muted);margin-top:6px;}
   label.fld{display:block;font-size:12.5px;color:var(--muted);margin:0 0 5px;font-weight:500;}
-  input[type=text],input[type=number],input[type=date],input[type=url],input[type=password],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);
-    border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;transition:border .12s;}
+  input[type=text],input[type=number],input[type=date],input[type=url],input[type=password],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);outline:none;transition:border .12s;}
   input:focus,select:focus,textarea:focus{border-color:var(--accent);}
   textarea{resize:vertical;min-height:64px;}
   .row{display:flex;gap:12px;flex-wrap:wrap;}
@@ -83,12 +75,13 @@
   .tag{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600;}
   .tag.diff{background:var(--surface2);color:var(--muted);}
   .tag.lvl{background:var(--green-soft);color:#3f5238;}
-  .tag.typ{background:var(--accent-soft);color:var(--accent-ink);}
+  .tchip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent-ink);margin:0 4px 4px 0;cursor:pointer;}
+  .tchip.off{background:var(--surface2);color:var(--muted);}
   .badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600;display:inline-block;}
   .badge.Instagram{background:#fce4ec;color:#ad1457;}
   .badge.Pinterest{background:#fde3e1;color:#b3261e;}
   .badge.Vinted{background:#e3f0ec;color:#1d7a5f;}
-  .badge.Web,.badge.Manuel,.badge.Image{background:var(--surface2);color:var(--muted);}
+  .badge.Web,.badge.Manuel,.badge.Image,.badge.Croquis{background:var(--surface2);color:var(--muted);}
   .muted{color:var(--muted);}
   .x{background:none;border:none;color:var(--muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:6px;}
   .x:hover{background:var(--surface2);color:var(--accent);}
@@ -116,9 +109,12 @@
   .studiogrid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start;}
   .ctl{margin-bottom:13px;}
   .patcard{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);}
-  .patcard .top{height:120px;display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;}
+  .patcard .top{height:120px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;font-weight:600;background-size:cover;background-position:center;}
   .patcard .bd{padding:12px 14px;}
   .ai-out{white-space:pre-wrap;font-size:14.5px;line-height:1.65;}
+  #sketchCanvas{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);touch-action:none;max-width:100%;cursor:crosshair;}
+  .fab{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:14px;}
+  .fab .nm{font-weight:600;}
   @media(max-width:860px){.studiogrid{grid-template-columns:1fr;}}
   @media(max-width:760px){
     .app{flex-direction:column;}
@@ -132,16 +128,13 @@
 <body>
 <div class="app">
   <nav class="nav">
-    <div class="brand">
-      <div class="dot serif">A</div>
-      <div><h1 class="serif">Atelier</h1><small>couture studio</small></div>
-    </div>
+    <div class="brand"><div class="dot serif">A</div><div><h1 class="serif">Atelier</h1><small>couture studio</small></div></div>
     <div class="navsec">Le processus</div>
     <button class="navbtn" data-v="inspirations"><span class="step">1</span> Inspirations</button>
     <button class="navbtn" data-v="assistant"><span class="step">2</span> Assistant IA</button>
     <button class="navbtn" data-v="studio"><span class="step">3</span> Studio design</button>
     <button class="navbtn" data-v="patrons"><span class="step">4</span> Patrons</button>
-    <button class="navbtn" data-v="tissu"><span class="step">5</span> Tissu &amp; matériel</button>
+    <button class="navbtn" data-v="tissu"><span class="step">5</span> Tissu &amp; matières</button>
     <button class="navbtn active" data-v="carnet"><span class="step">6</span> Carnet / suivi</button>
     <div class="navsec">Mon atelier</div>
     <button class="navbtn" data-v="capsule"><span class="ic">&#9740;</span> Garde-robe capsule</button>
@@ -160,12 +153,10 @@
 
     <!-- INSPIRATIONS -->
     <section id="inspirations" class="view">
-      <div class="vhead"><h2 class="serif">1 &middot; Inspirations</h2><p>Rassemble tes coups de cœur : par lien, par image, ou via le bouton Partager une fois l'app installée.</p></div>
+      <div class="vhead"><h2 class="serif">1 &middot; Inspirations</h2><p>Collecte par lien, image, ou bouton Partager. L'IA peut tagger automatiquement chaque image.</p></div>
       <div class="card" style="margin-bottom:22px;">
         <div class="seg" id="inspoMode">
-          <button class="on" data-m="link">Lien</button>
-          <button data-m="image">Image</button>
-          <button data-m="manual">Manuel</button>
+          <button class="on" data-m="link">Lien</button><button data-m="image">Image</button><button data-m="manual">Manuel</button>
         </div>
         <div id="inspoLink">
           <label class="fld">Colle un lien Instagram, Pinterest, Vinted, un blog couture…</label>
@@ -177,7 +168,7 @@
           <div id="impPreview" style="margin-top:14px;"></div>
         </div>
         <div id="inspoImage" style="display:none;">
-          <div class="dropz" id="dropz">Glisse une image ici, ou clique pour choisir un fichier<br><span style="font-size:12px;">(capture d'écran, photo… elle est redimensionnée et stockée chez toi)</span></div>
+          <div class="dropz" id="dropz">Glisse une image ici, ou clique pour choisir un fichier<br><span style="font-size:12px;">(capture, photo… redimensionnée et stockée chez toi)</span></div>
           <input type="file" id="imgFile" accept="image/*" multiple style="display:none;">
         </div>
         <div id="inspoManual" style="display:none;">
@@ -191,10 +182,11 @@
           </div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:22px;">
+      <div class="card" style="margin-bottom:18px;">
         <h3 style="font-size:16px;margin-bottom:14px;">Ma palette</h3>
         <div id="paletteRow" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"></div>
       </div>
+      <div id="tagFilter" style="margin-bottom:14px;"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
         <div class="muted" style="font-size:13px;" id="inspoCount"></div>
         <button class="btn ghost sm" onclick="goView('assistant')">Analyser mes inspirations &#8594;</button>
@@ -202,21 +194,22 @@
       <div class="grid g3" id="inspoList"></div>
     </section>
 
-    <!-- ASSISTANT IA -->
+    <!-- ASSISTANT -->
     <section id="assistant" class="view">
-      <div class="vhead"><h2 class="serif">2 &middot; Assistant créatif</h2><p>L'IA lit tes inspirations pour cerner ton style et te proposer des pistes de vêtements à créer.</p></div>
+      <div class="vhead"><h2 class="serif">2 &middot; Assistant créatif</h2><p>L'IA lit tes inspirations pour cerner ton style, te proposer des idées, et tagger tes images.</p></div>
       <div class="card" style="margin-bottom:20px;">
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
           <button class="btn" onclick="runAssistant()">Analyser mon style &amp; proposer des idées</button>
+          <button class="btn ghost" onclick="tagAllInspo()">Tagger toutes mes images (IA)</button>
           <span class="muted" style="font-size:13px;" id="aiMode"></span>
         </div>
         <div id="aiResult" style="margin-top:18px;"></div>
       </div>
       <div class="card">
-        <h3 style="font-size:15px;margin-bottom:6px;">Mode génératif (optionnel)</h3>
-        <p class="muted" style="font-size:13px;margin:0 0 12px;line-height:1.6;">Sans clé, l'assistant analyse tes mots-clés en local. Pour des idées rédigées par une vraie IA, colle une clé API (stockée uniquement sur ton appareil). Expérimental selon le fournisseur.</p>
+        <h3 style="font-size:15px;margin-bottom:6px;">Mode IA (optionnel)</h3>
+        <p class="muted" style="font-size:13px;margin:0 0 12px;line-height:1.6;">Sans clé : analyse locale des mots-clés + tags depuis le texte. Avec une clé (stockée sur ton appareil) : idées rédigées et <b>tags depuis l'image elle-même</b> (vision). OpenAI gpt-4o ou Anthropic Claude.</p>
         <div class="row">
-          <div><label class="fld">Fournisseur</label><select id="aiProvider"><option value="none">Aucun (analyse locale)</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic (Claude)</option></select></div>
+          <div><label class="fld">Fournisseur</label><select id="aiProvider"><option value="none">Aucun (local)</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic (Claude)</option></select></div>
           <div style="flex:2;"><label class="fld">Clé API</label><input id="aiKey" type="password" placeholder="sk-..."></div>
           <div style="flex:0 0 auto;display:flex;align-items:flex-end;"><button class="btn ghost" onclick="saveAiKey()">Enregistrer</button></div>
         </div>
@@ -225,64 +218,89 @@
 
     <!-- STUDIO -->
     <section id="studio" class="view">
-      <div class="vhead"><h2 class="serif">3 &middot; Studio design</h2><p>Donne vie à ton idée : compose le vêtement et vois-le se dessiner en direct.</p></div>
-      <div class="studiogrid">
-        <div class="card">
-          <div class="ctl"><label class="fld">Type de vêtement</label>
-            <div class="seg" id="dType" style="margin:0;">
-              <button class="on" data-t="robe">Robe</button><button data-t="jupe">Jupe</button>
-              <button data-t="top">Top</button><button data-t="pantalon">Pantalon</button>
+      <div class="vhead"><h2 class="serif">3 &middot; Studio design</h2><p>Compose un vêtement paramétrique, ou dessine librement n'importe quelle idée.</p></div>
+      <div class="seg" id="studioMode">
+        <button class="on" data-s="compose">Composer</button>
+        <button data-s="draw">Dessin libre</button>
+      </div>
+
+      <div id="studioCompose">
+        <div class="studiogrid">
+          <div class="card">
+            <div class="ctl"><label class="fld">Type de vêtement</label>
+              <div class="seg" id="dType" style="margin:0;"><button class="on" data-t="robe">Robe</button><button data-t="jupe">Jupe</button><button data-t="top">Top</button><button data-t="pantalon">Pantalon</button></div></div>
+            <div class="ctl"><label class="fld">Silhouette</label><select id="dSil"><option value="droite">Droite</option><option value="evasee">Évasée (trapèze)</option><option value="ajustee">Ajustée</option><option value="ample">Ample / oversize</option></select></div>
+            <div class="ctl"><label class="fld">Longueur</label><select id="dLen"><option value="mini">Mini / court</option><option value="genou" selected>Genou</option><option value="midi">Midi</option><option value="long">Long / maxi</option></select></div>
+            <div class="ctl" id="dNeckWrap"><label class="fld">Encolure</label><select id="dNeck"><option value="ras">Ras-du-cou</option><option value="v">Col V</option><option value="bateau">Bateau</option><option value="carre">Carré</option></select></div>
+            <div class="ctl" id="dSleeveWrap"><label class="fld">Manches</label><select id="dSleeve"><option value="sans">Sans manche</option><option value="courte" selected>Courte</option><option value="longue">Longue</option><option value="ballon">Ballon</option></select></div>
+            <div class="ctl"><label class="fld">Imprimé</label><div class="seg" id="dPrint" style="margin:0;"><button class="on" data-p="uni">Uni</button><button data-p="pois">Pois</button><button data-p="rayures">Rayures</button><button data-p="fleuri">Fleuri</button></div></div>
+            <div class="ctl"><label class="fld">Couleur</label><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><input id="dColor" type="color" value="#9c5d7c" style="height:38px;width:60px;padding:4px;"><div id="dPaletteQuick" style="display:flex;gap:6px;"></div></div></div>
+            <div class="ctl"><label class="fld">Vue</label><div class="seg" id="dViewSeg" style="margin:0;"><button class="on" data-w="devant">Devant</button><button data-w="dos">Dos</button></div></div>
+            <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+              <button class="btn sm" onclick="designToCarnet()">Au carnet</button>
+              <button class="btn ghost sm" onclick="designToCreate()">Créer le patron</button>
+              <button class="btn ghost sm" onclick="designToTissu()">Tissu</button>
+              <button class="btn ghost sm" onclick="designToDraw()">Dessiner par-dessus</button>
             </div>
           </div>
-          <div class="ctl"><label class="fld">Silhouette</label>
-            <select id="dSil"><option value="droite">Droite</option><option value="evasee">Évasée (trapèze)</option><option value="ajustee">Ajustée</option><option value="ample">Ample / oversize</option></select></div>
-          <div class="ctl"><label class="fld">Longueur</label>
-            <select id="dLen"><option value="mini">Mini / court</option><option value="genou" selected>Genou</option><option value="midi">Midi</option><option value="long">Long / maxi</option></select></div>
-          <div class="ctl" id="dNeckWrap"><label class="fld">Encolure</label>
-            <select id="dNeck"><option value="ras">Ras-du-cou</option><option value="v">Col V</option><option value="bateau">Bateau</option><option value="carre">Carré</option></select></div>
-          <div class="ctl" id="dSleeveWrap"><label class="fld">Manches</label>
-            <select id="dSleeve"><option value="sans">Sans manche</option><option value="courte" selected>Courte</option><option value="longue">Longue</option><option value="ballon">Ballon</option></select></div>
-          <div class="ctl"><label class="fld">Imprimé</label>
-            <div class="seg" id="dPrint" style="margin:0;">
-              <button class="on" data-p="uni">Uni</button><button data-p="pois">Pois</button>
-              <button data-p="rayures">Rayures</button><button data-p="fleuri">Fleuri</button>
-            </div>
-          </div>
-          <div class="ctl"><label class="fld">Couleur</label>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input id="dColor" type="color" value="#9c5d7c" style="height:38px;width:60px;padding:4px;">
-              <div id="dPaletteQuick" style="display:flex;gap:6px;"></div>
-            </div>
-          </div>
-          <div class="ctl"><label class="fld">Vue</label>
-            <div class="seg" id="dViewSeg" style="margin:0;"><button class="on" data-w="devant">Devant</button><button data-w="dos">Dos</button></div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-            <button class="btn sm" onclick="designToCarnet()">Au carnet</button>
-            <button class="btn ghost sm" onclick="designToTissu()">Calculer le tissu</button>
-            <button class="btn ghost sm" onclick="designToPatrons()">Patrons similaires</button>
+          <div>
+            <div class="draw-wrap" style="min-height:470px;"><svg id="designSvg" viewBox="0 0 300 470" width="100%" style="max-width:340px;"></svg></div>
+            <div class="card" style="margin-top:14px;"><div id="designSummary" class="muted" style="font-size:14px;"></div></div>
           </div>
         </div>
-        <div>
-          <div class="draw-wrap" style="min-height:470px;"><svg id="designSvg" viewBox="0 0 300 470" width="100%" style="max-width:340px;"></svg></div>
-          <div class="card" style="margin-top:14px;"><div id="designSummary" class="muted" style="font-size:14px;"></div></div>
+      </div>
+
+      <div id="studioDraw" style="display:none;">
+        <div class="card" style="margin-bottom:16px;">
+          <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+            <div><label class="fld">Couleur</label><input id="brushColor" type="color" value="#2e2a28" style="height:36px;width:54px;padding:3px;"></div>
+            <div id="sketchPalette" style="display:flex;gap:6px;align-items:flex-end;padding-bottom:4px;"></div>
+            <div style="min-width:140px;"><label class="fld">Pinceau · <span id="brushOut">4</span> px</label><input id="brushSize" type="range" min="1" max="40" value="4" style="width:100%;"></div>
+            <div style="display:flex;gap:8px;align-items:flex-end;padding-bottom:2px;flex-wrap:wrap;">
+              <button class="btn ghost sm" id="eraserBtn">Gomme</button>
+              <button class="btn ghost sm" onclick="sketchUndo()">Annuler</button>
+              <button class="btn ghost sm" onclick="sketchClear()">Effacer</button>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <div><label class="fld">Fond / référence</label><select id="refSelect"><option value="">Vierge</option><option value="__flat__">Mon croquis paramétrique (guide)</option></select></div>
+            <div style="flex:0 0 auto;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;">
+              <button class="btn" onclick="saveSketch()">Enregistrer le croquis</button>
+            </div>
+          </div>
         </div>
+        <div class="draw-wrap" style="min-height:0;"><canvas id="sketchCanvas" width="640" height="820" style="width:360px;height:auto;"></canvas></div>
+        <p class="muted" style="font-size:13px;margin-top:10px;">Dessine au doigt ou à la souris — aucune limite. Charge une référence pour décalquer, ou pars d'une page blanche. Enregistre ton croquis dans tes inspirations.</p>
       </div>
     </section>
 
     <!-- PATRONS -->
     <section id="patrons" class="view">
-      <div class="vhead"><h2 class="serif">4 &middot; Patrons</h2><p>Pioche dans une bibliothèque de patrons gratuits, ou crée le tien sur mesure.</p></div>
+      <div class="vhead"><h2 class="serif">4 &middot; Patrons</h2><p>Repère un patron en scrollant et importe-le, parcours la bibliothèque, ou crée le tien.</p></div>
       <div class="seg" id="patMode">
-        <button class="on" data-m="biblio">Bibliothèque de patrons</button>
+        <button class="on" data-m="repere">Mes patrons repérés</button>
+        <button data-m="biblio">Bibliothèque</button>
         <button data-m="creer">Créer mon patron</button>
       </div>
 
-      <div id="patBiblio">
+      <div id="patRepere">
+        <div class="card" style="margin-bottom:18px;">
+          <label class="fld">Tu as repéré un patron (lien du patron précis, pas juste le site) ? Colle-le ici :</label>
+          <div class="row">
+            <div style="flex:3;"><input id="ptUrl" type="url" placeholder="https://...le-patron-exact..."></div>
+            <div style="flex:0 0 auto;display:flex;align-items:flex-end;"><button class="btn" onclick="importPattern()">Importer le patron</button></div>
+          </div>
+          <div id="ptStatus" class="muted" style="font-size:13px;margin-top:10px;"></div>
+          <div id="ptPreview" style="margin-top:14px;"></div>
+        </div>
+        <div class="grid g3" id="patReperedList"></div>
+      </div>
+
+      <div id="patBiblio" style="display:none;">
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
           <select id="patFType" style="max-width:200px;"><option value="tous">Tous les vêtements</option><option value="robe">Robes</option><option value="jupe">Jupes</option><option value="top">Hauts / tops</option><option value="pantalon">Pantalons</option><option value="manteau">Vestes / manteaux</option><option value="accessoire">Accessoires</option><option value="enfant">Enfant</option></select>
           <select id="patFLevel" style="max-width:200px;"><option value="tous">Tous niveaux</option><option value="Débutant">Débutant</option><option value="Intermédiaire">Intermédiaire</option><option value="Avancé">Avancé</option></select>
-          <span class="muted" style="font-size:12.5px;">Patrons gratuits — le bouton ouvre la source officielle.</span>
+          <span class="muted" style="font-size:12.5px;">Patrons gratuits — le bouton ouvre la source.</span>
         </div>
         <div class="grid g3" id="patList"></div>
       </div>
@@ -296,12 +314,7 @@
           </div>
         </div>
         <div class="seg" id="pieceSeg">
-          <button class="on" data-p="jupe">Jupe élastique</button>
-          <button data-p="tote">Tote bag</button>
-          <button data-p="coussin">Housse de coussin</button>
-          <button data-p="taie">Taie d'oreiller</button>
-          <button data-p="chouchou">Chouchou</button>
-          <button data-p="bandeau">Bandeau</button>
+          <button class="on" data-p="jupe">Jupe élastique</button><button data-p="tote">Tote bag</button><button data-p="coussin">Housse de coussin</button><button data-p="taie">Taie d'oreiller</button><button data-p="chouchou">Chouchou</button><button data-p="bandeau">Bandeau</button>
         </div>
         <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start;">
           <div class="card" id="patronControls"></div>
@@ -311,25 +324,35 @@
             <button class="btn ghost" style="margin-top:14px;width:100%;" onclick="patronToCarnet()">+ Ajouter ce projet au carnet</button>
           </div>
         </div>
-        <p class="muted" style="font-size:13px;margin-top:14px;">Le générateur couvre les pièces « droites » faciles. Pour les vêtements ajustés (robes, vestes…), la bibliothèque de patrons est faite pour ça — ou un générateur sur mesure comme FreeSewing.</p>
+        <p class="muted" style="font-size:13px;margin-top:14px;">Le générateur couvre les pièces faciles. Pour les vêtements ajustés, la bibliothèque ou un générateur sur mesure (FreeSewing) prennent le relais.</p>
       </div>
     </section>
 
     <!-- TISSU -->
     <section id="tissu" class="view">
-      <div class="vhead"><h2 class="serif">5 &middot; Tissu &amp; matériel</h2><p>Combien de mètres et quel budget — selon le vêtement, ou pièce par pièce.</p></div>
+      <div class="vhead"><h2 class="serif">5 &middot; Tissu &amp; matières</h2><p>Quelle matière choisir, combien de mètres, quel budget.</p></div>
       <div class="seg" id="tissuMode">
-        <button class="on" data-m="vetement">Par type de vêtement</button>
-        <button data-m="piece">Par pièce exacte</button>
+        <button class="on" data-m="matieres">Bibliothèque de matières</button>
+        <button data-m="vetement">Métrage par vêtement</button>
+        <button data-m="piece">Métrage par pièce</button>
       </div>
 
-      <div id="tissuVetement">
+      <div id="tissuMatieres">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
+          <select id="fabUsage" style="max-width:220px;"><option value="tous">Tous les usages</option><option value="robe">Robes / blouses fluides</option><option value="structure">Pièces structurées</option><option value="maille">Maille / stretch</option><option value="bas">Jupes / pantalons</option><option value="manteau">Vestes / manteaux</option><option value="accessoire">Accessoires</option></select>
+          <select id="fabDrape" style="max-width:200px;"><option value="tous">Tous les tombés</option><option value="Fluide">Fluide</option><option value="Moyen">Moyen</option><option value="Structuré">Structuré</option></select>
+          <span class="muted" style="font-size:12.5px;">Repères de poids, tombé et difficulté pour bien choisir.</span>
+        </div>
+        <div class="grid g3" id="fabricList"></div>
+      </div>
+
+      <div id="tissuVetement" style="display:none;">
         <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start;">
           <div class="card">
             <div class="ctl"><label class="fld">Vêtement</label>
               <select id="gType"><option value="robe_sm">Robe sans manche</option><option value="robe_ml">Robe manches longues</option><option value="jupe">Jupe</option><option value="jupe_longue">Jupe longue</option><option value="top_sm">Top sans manche</option><option value="top_ml">Top / chemise manches longues</option><option value="pantalon">Pantalon</option><option value="short">Short</option><option value="veste">Veste</option><option value="manteau">Manteau</option></select></div>
             <div class="row">
-              <div><label class="fld">Tour de poitrine/hanches (cm)</label><input id="gCirc" type="number" value="96"></div>
+              <div><label class="fld">Tour poitrine/hanches (cm)</label><input id="gCirc" type="number" value="96"></div>
               <div><label class="fld">Longueur du vêtement (cm)</label><input id="gLen" type="number" value="100"></div>
             </div>
             <div class="row" style="margin-top:12px;">
@@ -377,8 +400,7 @@
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
         <div class="seg" id="carnetFilter" style="margin:0;">
-          <button class="on" data-f="tous">Tous</button><button data-f="envie">Envies</button>
-          <button data-f="cours">En cours</button><button data-f="fini">Terminés</button>
+          <button class="on" data-f="tous">Tous</button><button data-f="envie">Envies</button><button data-f="cours">En cours</button><button data-f="fini">Terminés</button>
         </div>
         <div style="flex:1;min-width:160px;"><input id="carnetSearch" type="text" placeholder="Rechercher un projet, un tissu..."></div>
       </div>
@@ -402,7 +424,7 @@
 
     <!-- PROFIL -->
     <section id="profil" class="view">
-      <div class="vhead"><h2 class="serif">Mon profil</h2><p>Le socle partagé : tes mesures servent au studio, aux patrons et au calculateur.</p></div>
+      <div class="vhead"><h2 class="serif">Mon profil</h2><p>Tes mesures servent au studio, aux patrons et au calculateur.</p></div>
       <div class="card" style="margin-bottom:22px;">
         <h3 style="font-size:16px;margin-bottom:14px;">Mes mesures (cm)</h3>
         <div class="grid g3">
@@ -438,7 +460,7 @@
       </div>
       <div class="card">
         <h3 style="font-size:16px;margin-bottom:6px;">Bouton Partager natif (Instagram, Pinterest, Vinted)</h3>
-        <p class="muted" style="font-size:13.5px;margin:0;line-height:1.6;">Une fois l'app <b>hébergée et installée</b> sur ton téléphone, fais Partager → Mon Atelier dans ces applis : le lien arrive directement dans tes inspirations. Détails dans <code>COLLECTE-INSPIRATIONS.md</code>.</p>
+        <p class="muted" style="font-size:13.5px;margin:0;line-height:1.6;">Une fois l'app <b>hébergée et installée</b>, fais Partager → Mon Atelier dans ces applis : le lien arrive dans tes inspirations. Détails dans <code>COLLECTE-INSPIRATIONS.md</code>.</p>
         <p id="installHint" class="muted" style="font-size:13px;margin:8px 0 0;"></p>
       </div>
     </section>
@@ -446,6 +468,6 @@
   </main>
 </div>
 <div class="toast" id="toast"></div>
-<script src="app.js"></script>
+<script src="app.v5.js"></script>
 </body>
 </html>
