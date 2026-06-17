@@ -73,7 +73,8 @@ function cmpBackward(){var o=fc&&fc.getActiveObject();if(o){fc.sendBackwards(o);
 function cmpDuplicate(){var o=fc&&fc.getActiveObject();if(!o)return;o.clone(function(c){c.set({left:o.left+24,top:o.top+24});fc.add(c);fc.setActiveObject(c);fc.requestRenderAll();});}
 function cmpDelete(){if(!fc)return;var a=fc.getActiveObjects();a.forEach(function(o){fc.remove(o);});fc.discardActiveObject();fc.requestRenderAll();}
 function cmpAddText(){var t=new fabric.Textbox("Texte",{left:240,top:120,fontSize:34,fill:$("cmpColor").value,fontFamily:"Georgia, serif",originX:"center",textAlign:"center",width:200});fc.add(t);fc.setActiveObject(t);fc.requestRenderAll();}
-function cmpClear(){if(!fc)return;fc.clear();fc.backgroundColor="#ffffff";fc.requestRenderAll();cmpItems=[];}
+function cmpClear(){if(!fc)return;fc.clear();fc.backgroundColor="#ffffff";fc.requestRenderAll();cmpItems=[];window._cmpManne=null;}
+function cmpMannequin(){if(!fc)return;if(window._cmpManne){fc.remove(window._cmpManne);window._cmpManne=null;fc.requestRenderAll();toast("Mannequin retiré");return;}if(typeof mannequinSVG!=="function")return;fabric.loadSVGFromString(mannequinSVG(),function(objs,opts){var o=fabric.util.groupSVGElements(objs,opts);o.set({originX:"center",originY:"center",left:240,top:310,selectable:false,evented:false,opacity:0.22});o.scaleToHeight(560);fc.add(o);fc.sendToBack(o);window._cmpManne=o;fc.requestRenderAll();toast("Compose sur le mannequin");});}
 function cmpData(){return fc.toDataURL({format:"jpeg",quality:0.85,multiplier:1});}
 function cmpSave(){if(!fc)return;var obj={id:uid(),title:"Mon design",img:cmpData(),note:cmpItems.slice(0,8).join(", "),url:"",platform:"Design",tags:[]};state.inspirations.unshift(obj);if(!save()){state.inspirations.shift();toast("Mémoire pleine");return;}if(typeof renderInspo==="function")renderInspo();if(typeof refreshRefSelect==="function")refreshRefSelect();toast("Design enregistré dans tes inspirations");}
 function cmpToCarnet(){if(!fc)return;state.projets.unshift({id:uid(),name:"Mon design — "+(cmpItems[0]||"pièce"),piece:"Design",diff:"Intermédiaire",stat:"envie",tissu:cmpItems.slice(0,6).join(", "),date:""});save();if(typeof renderProjets==="function"){renderProjets();renderCarnetStats();}toast("Design ajouté au carnet");}
@@ -83,7 +84,7 @@ function cmpRenderAI(){
   if(prov!=="openai"||!state.ai.key){out.innerHTML='<div class="muted" style="font-size:13px;">Le rendu réaliste utilise la génération d\'image OpenAI : choisis « OpenAI » et colle ta clé dans l\'onglet Assistant IA.</div>';return;}
   var items=cmpItems.length?cmpItems.join(", "):"un vêtement";
   var extra=$("cmpPrompt").value.trim();
-  var prompt="Illustration de mode à plat (flat technical fashion illustration), fond blanc uni, une seule pièce de vêtement centrée, composée de : "+items+(extra?". "+extra:"")+". Style épuré, propre, couleurs douces.";
+  var prompt="Photographie de mode réaliste en studio d'un vêtement porté par un mannequin : "+items+(extra?". "+extra:"")+". Lumière douce, fond neutre, rendu textile réaliste et détaillé, haute qualité.";
   out.innerHTML='<div class="muted"><span class="spin"></span> Génération du rendu… (quelques secondes)</div>';
   fetch("https://api.openai.com/v1/images/generations",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+state.ai.key},body:JSON.stringify({model:"gpt-image-1",prompt:prompt,size:"1024x1024",n:1})})
     .then(function(r){return r.json();})
