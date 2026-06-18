@@ -69,6 +69,7 @@ function openPattern(slug){
     '<button class="btn ghost" onclick="fsCatToCarnet(\''+slug+'\')">+ carnet</button></div>'+
     '<div id="patpStatus" class="muted" style="font-size:13px;margin-top:10px;"></div></div>'+
     (typeof fsInfoHtml==="function"?fsInfoHtml(slug):"")+
+    (typeof fsExamplesHtml==="function"?fsExamplesHtml(slug):"")+
     '<div id="patpOut" style="background:#fff;border-radius:12px;border:1px solid var(--line);padding:10px;min-height:320px;"></div>';
   goView("patternpage"); patGenerate(slug);
 }
