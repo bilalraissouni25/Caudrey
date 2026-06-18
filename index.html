@@ -138,7 +138,7 @@
     <button class="navbtn active" data-v="carnet"><span class="step">6</span> Carnet / suivi</button>
     <div class="navsec">Mon atelier</div>
     <button class="navbtn" data-v="capsule"><span class="ic">&#9740;</span> Garde-robe capsule</button>
-    <button class="navbtn" data-v="profil"><span class="ic">&#9737;</span> Mon profil</button>
+    <button class="navbtn" data-v="profil"><span class="ic">&#9737;</span> Mes profils</button>
     <button class="navbtn" data-v="donnees"><span class="ic">&#8635;</span> Données &amp; partage</button>
   </nav>
   <main class="main">
@@ -492,9 +492,10 @@
 
     <!-- PROFIL -->
     <section id="profil" class="view">
-      <div class="vhead"><h2 class="serif">Mon profil</h2><p>Tes mesures servent au studio, aux patrons et au calculateur.</p></div>
+      <div class="vhead"><h2 class="serif">Mes profils</h2><p>Crée un profil de mesures par personne ; choisis le profil actif, puis lequel utiliser pour générer un patron.</p></div>
+      <div id="profilesBar"></div>
       <div class="card" style="margin-bottom:22px;">
-        <h3 style="font-size:16px;margin-bottom:14px;">Mes mesures (cm)</h3>
+        <h3 style="font-size:16px;margin-bottom:14px;">Mesures du profil actif (cm)</h3>
         <div class="grid g3">
           <div><label class="fld">Tour de taille</label><input id="mTaille" type="number" placeholder="72"></div>
           <div><label class="fld">Tour de poitrine</label><input id="mPoitrine" type="number" placeholder="92"></div>
@@ -541,11 +542,14 @@
 <script src="app.libimg.js"></script>
 <script src="app.fs.bundle.js"></script>
 <script src="app.v6.js"></script>
+<script src="app.profiles.js"></script>
 <script src="app.composer.js"></script>
+<script src="app.elements.js"></script>
 <script src="app.fsinfo.js"></script>
 <script src="app.fsx2.js"></script>
 <script src="app.patterns2.js"></script>
 <script src="app.motifs.js"></script>
 <script src="app.freesewing.js"></script>
+<script src="app.illus.js"></script>
 </body>
 </html>

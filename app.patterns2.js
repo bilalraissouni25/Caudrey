@@ -61,10 +61,11 @@ function fsCatToCarnet(slug){
 
 /* ===== Page patron interne ===== */
 function openPattern(slug){
-  var d=FSMETA[slug]; if(!d)return; var host=$("patternpage"); if(!host)return;
+  var d=FSMETA[slug]; if(!d)return; window._patpSlug=slug; var host=$("patternpage"); if(!host)return;
   host.innerHTML='<div class="vhead"><button class="btn ghost sm" onclick="closePattern()">&#8592; Retour à la bibliothèque</button>'+
     '<h2 class="serif" style="margin-top:12px;">'+esc(d.name)+'</h2><p>FreeSewing · open-source · niveau '+esc(d.level)+'</p></div>'+
     '<div class="card" style="margin-bottom:16px;"><p class="muted" style="font-size:14px;margin:0 0 12px;line-height:1.6;">'+esc(d.desc)+' Le patron est généré sur mesure à partir de tes mesures (onglet Mon profil), complétées par une base taille 38.</p>'+
+    (typeof patpProfileSelectHtml==="function"?patpProfileSelectHtml():"")+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="patGenerate(\''+slug+'\')">Générer / régénérer</button>'+
     '<button class="btn ghost" onclick="patPrint()">Imprimer le patron</button>'+
     '<button class="btn ghost" onclick="fsCatToCarnet(\''+slug+'\')">+ carnet</button></div>'+
