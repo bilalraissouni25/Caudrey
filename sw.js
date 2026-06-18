@@ -1,4 +1,4 @@
-const CACHE="atelier-couture-v18";
+const CACHE="atelier-couture-v19";
 const ASSETS=["./","./index.html","./app.libimg.js","./app.fs.bundle.js","./app.fsinfo.js","./app.fsx2.js","./app.v6.js","./app.profiles.js","./app.composer.js","./app.elements.js","./app.patterns2.js","./app.motifs.js","./app.freesewing.js","./app.illus.js","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
