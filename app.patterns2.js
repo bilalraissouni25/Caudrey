@@ -32,14 +32,15 @@ function renderPatList(){
   state.patrons.forEach(function(p){ if(ft!="tous"&&ft!="repere"&&p.type!=ft)return; if(fl!="tous")return; cards.push(reperedCard(p)); });
   if(ft!="repere"){ FSCATALOG.filter(function(d){return (ft=="tous"||d.type==ft)&&(fl=="tous"||d.level==fl);}).forEach(function(d){ cards.push(fsCard(d)); }); }
   if(!cards.length){ el.innerHTML='<div class="empty" style="grid-column:1/-1;">Aucun patron pour ce filtre.</div>'; return; }
-  el.innerHTML=cards.join(""); lazyFsThumbs();
+  el.innerHTML=cards.join(""); if(typeof startCardRotators==="function")startCardRotators(); lazyFsThumbs();
 }
 function fsCard(d){
   var col=(typeof TYPECOL!=="undefined"&&TYPECOL[d.type])||"#9c5d7c";
   var cached=state.patImg&&state.patImg["fs:"+d.slug];
-  var top=cached
+  var photoTop=(typeof fsCardTop==="function")?fsCardTop(d.slug):null;
+  var top=photoTop?photoTop:(cached
     ? '<div class="top" data-fs="'+d.slug+'" style="background:#fff;background-image:url(\''+cached+'\');background-size:contain;background-repeat:no-repeat;background-position:center;"></div>'
-    : '<div class="top" data-fs="'+d.slug+'" style="background:'+col+';">'+(typeof garmentFlat==="function"?garmentFlat(d.type):"")+'</div>';
+    : '<div class="top" data-fs="'+d.slug+'" style="background:'+col+';">'+(typeof garmentFlat==="function"?garmentFlat(d.type):"")+'</div>');
   return '<div class="patcard">'+top+'<div class="bd"><div style="font-weight:600;">'+esc(d.name)+'</div>'+
     '<div class="muted" style="font-size:13px;margin-bottom:6px;">FreeSewing · open-source</div>'+
     '<div style="margin-bottom:8px;"><span class="tag lvl">'+esc(d.level)+'</span></div>'+
@@ -70,8 +71,10 @@ function openPattern(slug){
     '<div id="patpStatus" class="muted" style="font-size:13px;margin-top:10px;"></div></div>'+
     (typeof fsExamplesHtml==="function"?fsExamplesHtml(slug):"")+
     (typeof fsInfoHtml==="function"?fsInfoHtml(slug):"")+
+    (typeof fsDocHtml==="function"?fsDocHtml(slug):"")+
     '<div id="patpOut" style="background:#fff;border-radius:12px;border:1px solid var(--line);padding:10px;min-height:320px;"></div>';
   goView("patternpage"); patGenerate(slug);
+  if(typeof fsStartAutoCarousel==="function")setTimeout(fsStartAutoCarousel,200);
 }
 function closePattern(){ goView("patrons"); }
 function patGenerate(slug){
