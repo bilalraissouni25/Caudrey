@@ -68,8 +68,8 @@ function openPattern(slug){
     '<button class="btn ghost" onclick="patPrint()">Imprimer le patron</button>'+
     '<button class="btn ghost" onclick="fsCatToCarnet(\''+slug+'\')">+ carnet</button></div>'+
     '<div id="patpStatus" class="muted" style="font-size:13px;margin-top:10px;"></div></div>'+
-    (typeof fsInfoHtml==="function"?fsInfoHtml(slug):"")+
     (typeof fsExamplesHtml==="function"?fsExamplesHtml(slug):"")+
+    (typeof fsInfoHtml==="function"?fsInfoHtml(slug):"")+
     '<div id="patpOut" style="background:#fff;border-radius:12px;border:1px solid var(--line);padding:10px;min-height:320px;"></div>';
   goView("patternpage"); patGenerate(slug);
 }
@@ -80,7 +80,7 @@ function patGenerate(slug){
   if(st)st.innerHTML='<span class="spin"></span> Génération de ton patron sur mesure…';
   setTimeout(function(){
     try{ var svg=window.FS.draft(slug, fsOverrides()); if(!svg||svg.indexOf("<svg")<0)throw new Error("rendu vide");
-      window._patpSvg=svg; if(out)out.innerHTML='<div style="overflow:auto;max-height:640px;">'+svg+'</div>'; if(st)st.textContent="Patron généré à partir de tes mesures.";
+      var styled=(typeof styleFsSvg==="function")?styleFsSvg(svg):svg; window._patpSvg=styled; if(out)out.innerHTML='<div style="overflow:auto;max-height:640px;">'+styled+'</div>'; if(st)st.textContent="Patron généré à partir de tes mesures.";
     }catch(e){ if(st)st.textContent="Erreur de génération : "+String((e&&e.message)||e).slice(0,120); }
   },40);
 }
