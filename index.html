@@ -209,7 +209,7 @@
         <h3 style="font-size:15px;margin-bottom:6px;">Mode IA (optionnel)</h3>
         <p class="muted" style="font-size:13px;margin:0 0 12px;line-height:1.6;">Sans clé : analyse locale des mots-clés + tags depuis le texte. Avec une clé (stockée sur ton appareil) : idées rédigées et <b>tags depuis l'image elle-même</b> (vision). OpenAI gpt-4o ou Anthropic Claude.</p>
         <div class="row">
-          <div><label class="fld">Fournisseur</label><select id="aiProvider"><option value="none">Aucun (local)</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic (Claude)</option></select></div>
+          <div><label class="fld">Fournisseur</label><select id="aiProvider"><option value="none">Aucun (local)</option><option value="gemini">Google Gemini</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic (Claude)</option></select></div>
           <div style="flex:2;"><label class="fld">Clé API</label><input id="aiKey" type="password" placeholder="sk-..."></div>
           <div style="flex:0 0 auto;display:flex;align-items:flex-end;"><button class="btn ghost" onclick="saveAiKey()">Enregistrer</button></div>
         </div>
@@ -551,5 +551,6 @@
 <script src="app.motifs.js"></script>
 <script src="app.freesewing.js"></script>
 <script src="app.illus.js"></script>
+<script src="app.gemini.js"></script>
 </body>
 </html>
