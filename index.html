@@ -660,9 +660,9 @@
     <section id="tissu" class="view">
       <div class="vhead"><h2 class="serif">5 &middot; Tissu &amp; matières</h2><p>Quelle matière choisir, combien de mètres, quel budget.</p></div>
       <div class="seg" id="tissuMode">
-        <button class="on" data-m="matieres">Bibliothèque de matières</button>
-        <button data-m="vetement">Métrage par vêtement</button>
-        <button data-m="piece">Métrage par pièce</button>
+        <button class="on" data-m="matieres">Quelle matière choisir</button>
+        <button data-m="vetement">Combien acheter pour un vêtement</button>
+        <button data-m="piece">Calcul par pièces rectangulaires</button>
       </div>
 
       <div id="tissuMatieres">
@@ -675,6 +675,7 @@
       </div>
 
       <div id="tissuVetement" style="display:none;">
+        <p class="muted" style="font-size:13.5px;line-height:1.6;margin:0 0 16px;">Avant d'aller au magasin : combien de mètres prévoir pour un type de vêtement, selon ta morphologie et la laize du tissu. C'est une estimation large — si tu as déjà généré le patron, fie-toi plutôt au plan de coupe imprimé.</p>
         <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start;">
           <div class="card">
             <div class="ctl"><label class="fld">Vêtement</label>
@@ -694,6 +695,7 @@
       </div>
 
       <div id="tissuPiece" style="display:none;">
+        <p class="muted" style="font-size:13.5px;line-height:1.6;margin:0 0 16px;">Pour les projets faits de rectangles — tote bag, coussin, taie, chouchou, ceinture. Donne les dimensions d'une pièce et leur nombre : le calcul place les pièces côte à côte dans la laize et en déduit le métrage exact, marges comprises.</p>
         <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start;">
           <div class="card">
             <div class="row"><div><label class="fld">Largeur d'une pièce (cm)</label><input id="tW" type="number" value="60"></div>

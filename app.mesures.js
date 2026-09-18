@@ -165,8 +165,25 @@ function mesSet(k,v){
   save();
 }
 
-/* les patrons utilisent maintenant toutes les mesures connues (mm) */
-function fsOverrides(){
+/* --- morphologie de référence : sert uniquement à combler les mesures non saisies --- */
+function mesBase(){
+  var p=(typeof activeProfile==="function")?activeProfile():null;
+  var b=(p&&p.base)||(state.profil&&state.profil.base)||{};
+  return {who:(b.who==="m")?"m":"f", size:b.size||38};
+}
+function mesSetBase(k,v){
+  var p=(typeof activeProfile==="function")?activeProfile():null;
+  if(!p)return;
+  p.base=p.base||{who:"f",size:38};
+  p.base[k]=(k==="size")?parseInt(v,10):v;
+  if(state.profil)state.profil.base=p.base;
+  save(); mesRender();
+  if(typeof renderPatronControls==="function")renderPatronControls();
+}
+window.mesSetBase=mesSetBase;
+
+/* mesures réellement saisies (mm) — c'est elles qui comptent pour le décompte des modèles */
+function mesMesurees(){
   var m=mesGet(), o={};
   MES_LISTE.forEach(function(x){
     var v=m[x.k];
@@ -178,6 +195,14 @@ function fsOverrides(){
   Object.keys(leg).forEach(function(fr){ if(o[leg[fr]]==null&&m[fr])o[leg[fr]]=Math.round(m[fr]*10); });
   if(o.hips!=null&&o.seat==null)o.seat=o.hips;
   return o;
+}
+window.mesMesurees=mesMesurees;
+
+/* ce qui part au moteur : la morphologie de référence, recouverte par les vraies mesures */
+function fsOverrides(){
+  var base={};
+  try{ if(window.FS&&typeof FS.base==="function"){ var b=mesBase(); base=FS.base(b.size,b.who); } }catch(e){}
+  return Object.assign(base, mesMesurees());
 }
 window.fsOverrides=fsOverrides;
 window.fsMeasure=fsOverrides;
@@ -219,8 +244,8 @@ function mesTailleFr(){
 /* ---------- combien de modèles sont réellement générables ---------- */
 function mesModelesOk(){
   if(!window.FS||typeof FS.info!=="function")return null;
-  /* on raisonne sur ce qui part réellement au patron (seat est déduit des hanches, etc.) */
-  var m=fsOverrides(), ok=0, tot=0, manquantes={};
+  /* on compte sur les mesures réellement prises, pas sur la base de référence */
+  var m=mesMesurees(), ok=0, tot=0, manquantes={};
   FS.designs.forEach(function(d){
     var i=null; try{ i=FS.info(d); }catch(e){}
     if(!i)return;
@@ -288,7 +313,23 @@ function mesResume(){
   var tf=mesTailleFr();
   var al=mesAlertes();
 
-  host.innerHTML='<div class="card">'+
+  var b=mesBase();
+  var tailles=(b.who==="m")?[32,34,36,38,40,42,44,46,48,50]:[28,30,32,34,36,38,40,42,44,46];
+  if(tailles.indexOf(b.size)<0)b.size=tailles[Math.floor(tailles.length/2)];
+
+  host.innerHTML='<div class="card" style="margin-bottom:14px;">'+
+    '<div style="font-size:14px;font-weight:600;margin-bottom:4px;">Morphologie de référence</div>'+
+    '<p class="muted" style="font-size:12.5px;line-height:1.5;margin:0 0 10px;">Elle ne sert qu\'à combler les mesures que tu n\'as pas prises. Dès qu\'une mesure est saisie, c\'est la tienne qui gagne.</p>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">'+
+      '<div class="seg" style="margin:0;">'+
+        '<button class="'+(b.who==="f"?"on":"")+'" onclick="mesSetBase(\'who\',\'f\')">Femme</button>'+
+        '<button class="'+(b.who==="m"?"on":"")+'" onclick="mesSetBase(\'who\',\'m\')">Homme</button>'+
+      '</div>'+
+      '<div><label class="fld">Taille de référence</label><select onchange="mesSetBase(\'size\',this.value)" style="width:auto;">'+
+        tailles.map(function(t){return '<option value="'+t+'"'+(t===b.size?" selected":"")+'>'+t+'</option>';}).join("")+
+      '</select></div>'+
+    '</div></div>'+
+  '<div class="card">'+
     '<div class="prg" style="margin:0 0 10px;"><div class="prg-b"><i style="width:'+pct+'%"></i></div>'+
       '<div class="prg-t">'+faits+' mesures sur '+oblig.length+'</div></div>'+
     (mod?'<div class="ms-kpi"><b>'+mod.ok+'</b> modèle'+(mod.ok>1?"s":"")+' sur '+mod.total+' générable'+(mod.ok>1?"s":"")+' avec ces mesures</div>':'')+

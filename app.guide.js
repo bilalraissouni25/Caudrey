@@ -26,7 +26,7 @@ var GUIDE_PROJETS=[
     id:"bandeau", nom:"Bandeau à nouer", emoji:"&#127746;", niveau:1, temps:"40 min", pieces:"1 pièce",
     quoi:["accessoire"], tissu:"Coton léger, popeline, liberty", metrage:"0,3 m", budget:"2–5 €", mercerie:"Aucune",
     machine:false, extensible:false,
-    pourquoi:"Même logique que le chouchou, en plus grand : des coutures droites et un retournement, pour un accessoire qu'elle mettra vraiment.",
+    pourquoi:"Même logique que le chouchou, en plus grand : des coutures droites et un retournement, pour un accessoire que tu mettras vraiment.",
     apprend:["couture droite","angles","tube retourné"],
     pieges:["Dégarnis les angles avant de retourner, sinon ils restent épais et ronds."],
     etapes:[
@@ -78,13 +78,13 @@ var GUIDE_PROJETS=[
     quoi:["bas","porter"], tissu:"Coton, lin, viscose (fluide mais pas glissant)", metrage:"1,2 m",
     budget:"12–25 €", mercerie:"Élastique plat de 3 à 4 cm, de ton tour de taille moins 3 cm",
     machine:true, extensible:false,
-    pourquoi:"Le premier vêtement : pas de fermeture, pas d'ajustement compliqué, et elle le portera vraiment. L'app calcule le patron à ses mesures.",
+    pourquoi:"Le premier vêtement : pas de fermeture, pas d'ajustement compliqué, et tu le porteras vraiment. L'app calcule le patron à tes mesures.",
     apprend:["couture droite","coulisse élastique","ourlet","fronces"],
     pieges:["Ne saute pas le décatissage : le coton rétrécit au premier lavage et la jupe devient trop courte.",
             "Coupe la coulisse 1 cm plus large que l'élastique, sinon il ne passe pas."],
     etapes:[
       {t:"Décatir le tissu : le laver et le repasser comme le vêtement fini", min:5, tech:["décatissage"], conseil:"À faire la veille. C'est l'étape que tout le monde saute et regrette."},
-      {t:"Prendre les mesures : tour de hanches et longueur taille-genou", min:10, tech:["mesures"], conseil:"Onglet Mes profils : elles serviront à tous les patrons."},
+      {t:"Prendre tes mesures : tour de hanches et longueur taille-genou", min:10, tech:["mesures"], conseil:"Onglet Mes profils : elles serviront à tous les patrons."},
       {t:"Générer le patron dans l'app (Patrons → Créer mon patron) et l'imprimer", min:20, tech:["patron"], conseil:"Vérifie le carré de 5 cm avant de couper quoi que ce soit."},
       {t:"Couper 2 rectangles selon le patron, droit-fil dans la longueur", min:20, tech:["coupe"]},
       {t:"Surfiler les bords verticaux (zigzag ou surjeteuse)", min:12, tech:["surfilage"], conseil:"Sinon le tissu s'effiloche au lavage."},
@@ -115,14 +115,14 @@ var GUIDE_PROJETS=[
     id:"top-aaron", nom:"Débardeur Aaron (sur mesure)", emoji:"&#128085;", niveau:2, temps:"3 h", pieces:"2 pièces",
     quoi:["haut","porter"], tissu:"Jersey de coton moyen (pas trop fin pour commencer)", metrage:"1 m",
     budget:"12–20 €", mercerie:"Aiguille jersey 80, fil polyester", machine:true, extensible:true,
-    pourquoi:"Le premier vêtement en maille, généré à ses mesures. Peu de pièces, et le jersey pardonne les petites imprécisions.",
+    pourquoi:"Le premier vêtement en maille, généré à tes mesures. Peu de pièces, et le jersey pardonne les petites imprécisions.",
     apprend:["jersey","point extensible","bordure maille","ourlet jersey"],
     pieges:["Change d'aiguille : une aiguille universelle saute des points dans le jersey.",
             "Ne tire pas sur le tissu en cousant, laisse la machine l'entraîner."],
     etapes:[
       {t:"Décatir le jersey", min:5, tech:["décatissage"]},
-      {t:"Compléter ses mesures dans Mes profils", min:15, tech:["mesures"]},
-      {t:"Générer le patron Aaron et l'imprimer avec 1 cm de marges", min:25, tech:["patron"]},
+      {t:"Compléter tes mesures dans Mes profils", min:15, tech:["mesures"]},
+      {t:"Générer le patron Aaron à tes mesures et l'imprimer avec 1 cm de marges", min:25, tech:["patron"]},
       {t:"Assembler les pages, découper les pièces", min:25, tech:["patron"]},
       {t:"Couper le jersey, droit-fil dans le sens des côtes", min:25, tech:["coupe"], conseil:"Le jersey s'étire : ne le laisse pas pendre hors de la table."},
       {t:"Monter une aiguille jersey et régler le point extensible (ou zigzag étroit)", min:10, tech:["point extensible"]},
@@ -136,12 +136,12 @@ var GUIDE_PROJETS=[
     id:"tshirt-teagan", nom:"T-shirt Teagan (sur mesure)", emoji:"&#128085;", niveau:3, temps:"4 h", pieces:"3 pièces",
     quoi:["haut","porter"], tissu:"Jersey de coton", metrage:"1,4 m", budget:"15–25 €",
     mercerie:"Aiguille jersey 80", machine:true, extensible:true,
-    pourquoi:"Le vrai t-shirt à sa taille : la suite logique du débardeur, avec les manches en plus.",
+    pourquoi:"Le vrai t-shirt à ta taille : la suite logique du débardeur, avec les manches en plus.",
     apprend:["jersey","manche montée à plat","bordure maille","ourlet jersey"],
     pieges:["Repère bien le devant et le dos des manches avant de coudre : les crans sont là pour ça."],
     etapes:[
       {t:"Décatir le jersey", min:5, tech:["décatissage"]},
-      {t:"Générer le patron Teagan à ses mesures et l'imprimer", min:30, tech:["patron"]},
+      {t:"Générer le patron Teagan à tes mesures et l'imprimer", min:30, tech:["patron"]},
       {t:"Assembler et découper les pièces", min:30, tech:["patron"]},
       {t:"Couper le tissu en respectant le droit-fil et les crans", min:30, tech:["coupe"]},
       {t:"Coudre les épaules", min:15, tech:["couture droite"]},
@@ -160,7 +160,7 @@ var GUIDE_PROJETS=[
     pieges:["L'entrejambe se coud en dernier, une fois les deux jambes montées."],
     etapes:[
       {t:"Décatir le tissu", min:5, tech:["décatissage"]},
-      {t:"Générer le patron Waralee à ses mesures et l'imprimer", min:30, tech:["patron"]},
+      {t:"Générer le patron Waralee à tes mesures et l'imprimer", min:30, tech:["patron"]},
       {t:"Assembler les pages et découper", min:30, tech:["patron"]},
       {t:"Couper les pièces, droit-fil respecté", min:30, tech:["coupe"]},
       {t:"Surfiler tous les bords", min:20, tech:["surfilage"]},
@@ -181,7 +181,7 @@ var GUIDE_PROJETS=[
             "Prévois large en métrage, une jupe cercle mange du tissu."],
     etapes:[
       {t:"Décatir le tissu", min:5, tech:["décatissage"]},
-      {t:"Générer le patron Sandy à ses mesures", min:25, tech:["patron"]},
+      {t:"Générer le patron Sandy à tes mesures", min:25, tech:["patron"]},
       {t:"Imprimer en A0 si possible : une jupe cercle fait beaucoup de pages A4", min:30, tech:["patron"], conseil:"L'app propose le format A0 pour la reprographie."},
       {t:"Couper les pièces", min:35, tech:["coupe"]},
       {t:"Coudre un côté, poser la fermeture invisible sur l'autre", min:45, tech:["fermeture invisible"], conseil:"Pied spécial fermeture invisible, et va lentement."},
@@ -227,14 +227,14 @@ var GUIDE_PROJETS=[
 
 /* ---------- questionnaire ---------- */
 var GUIDE_Q=[
-  {k:"machine", q:"Elle a une machine à coudre ?", o:[
+  {k:"machine", q:"Tu as une machine à coudre ?", o:[
     {v:"oui", l:"Oui", d:"une machine familiale suffit"},
     {v:"non", l:"Pas encore", d:"on reste sur du cousu main"}]},
-  {k:"niveau", q:"Où en est-elle ?", o:[
-    {v:"1", l:"Tout début", d:"jamais cousu, ou presque"},
+  {k:"niveau", q:"Où en es-tu ?", o:[
+    {v:"1", l:"Tout début", d:"je n'ai jamais cousu, ou presque"},
     {v:"2", l:"Quelques essais", d:"des coutures droites, un ourlet"},
-    {v:"3", l:"À l'aise", d:"elle a déjà fini un vêtement"}]},
-  {k:"envie", q:"Elle a envie de coudre quoi en premier ?", o:[
+    {v:"3", l:"À l'aise", d:"j'ai déjà fini un vêtement"}]},
+  {k:"envie", q:"Tu as envie de coudre quoi en premier ?", o:[
     {v:"porter", l:"Un vêtement", d:"quelque chose à porter"},
     {v:"accessoire", l:"Un accessoire", d:"court et gratifiant"},
     {v:"maison", l:"Pour la maison", d:"coussin, taie, tablier"},
@@ -242,8 +242,8 @@ var GUIDE_Q=[
   {k:"temps", q:"Combien de temps d'un coup ?", o:[
     {v:"court", l:"Une soirée", d:"1 à 2 heures"},
     {v:"moyen", l:"Un après-midi", d:"3 à 4 heures"},
-    {v:"long", l:"Un week-end", d:"elle peut y passer du temps"}]},
-  {k:"extensible", q:"Le tissu extensible (jersey), ça lui parle ?", o:[
+    {v:"long", l:"Un week-end", d:"je peux y passer du temps"}]},
+  {k:"extensible", q:"Le tissu extensible (jersey), ça te tente ?", o:[
     {v:"non", l:"On évite", d:"tissus stables pour commencer"},
     {v:"oui", l:"Pourquoi pas", d:"t-shirts et débardeurs possibles"}]}
 ];
@@ -286,7 +286,7 @@ function guideScore(){
     return {p:p,s:s};
   }).sort(function(a,b){return b.s-a.s;}).slice(0,3);
 
-  out.innerHTML='<div class="gres-h">Trois projets pour elle</div>'+
+  out.innerHTML='<div class="gres-h">Trois projets pour toi</div>'+
     '<div class="gres">'+notes.map(function(n,i){return guideCard(n.p,i===0);}).join("")+'</div>';
 }
 function guideCard(p,best){
@@ -299,7 +299,7 @@ function guideCard(p,best){
     '<div class="gc-l"><b>Tissu</b> '+esc(p.tissu)+'</div>'+
     '<div class="gc-l"><b>Budget</b> '+esc(p.budget)+'</div>'+
     (p.mercerie&&p.mercerie!=="Aucune"?'<div class="gc-l"><b>Mercerie</b> '+esc(p.mercerie)+'</div>':'')+
-    '<div class="gc-l"><b>Elle apprend</b> '+p.apprend.map(esc).join(", ")+'</div>'+
+    '<div class="gc-l"><b>Tu apprends</b> '+p.apprend.map(esc).join(", ")+'</div>'+
     (p.pieges&&p.pieges.length?'<div class="gc-w"><b>À ne pas rater</b><br>'+p.pieges.map(esc).join('<br>')+'</div>':'')+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">'+
       '<button class="btn sm" onclick="guideStart(\''+p.id+'\')">Démarrer ce projet</button>'+
