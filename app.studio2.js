@@ -17,6 +17,10 @@
 
   /* ---------- mannequin (croquis de mode, devant / dos) ---------- */
   function manneSVG(view){
+    /* silhouette construite sur ses mesures quand app.corps.js est là */
+    if(typeof window.corpsSvg==="function"){
+      try{ return window.corpsSvg({trait:"#8f8279", ep:7, reperes:view!=="dos"}); }catch(e){}
+    }
     var s="#8f8279", w=2.6;
     var body='<ellipse cx="100" cy="40" rx="21" ry="27" fill="none" stroke="'+s+'" stroke-width="'+w+'"/>'+
       '<path d="M91 66 L90 84 M109 66 L110 84" stroke="'+s+'" stroke-width="'+w+'" fill="none"/>'+

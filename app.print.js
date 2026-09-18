@@ -327,7 +327,8 @@ function fsPrintGo(slug,label){
     var meas=(typeof fsOverrides==="function")?fsOverrides():{};
     var res;
     if(window.FS&&typeof window.FS.draftSvg==="function"){
-      res=window.FS.draftSvg(slug,{measurements:meas,sa:saCm>0?saCm*10:0,paperless:paperless});
+      var opts=(window._tkOpts&&window._tkOpts.slug===slug)?window._tkOpts.opts:{};
+      res=window.FS.draftSvg(slug,{measurements:meas,options:opts,sa:saCm>0?saCm*10:0,paperless:paperless});
     } else {
       res={svg:window.FS.draft(slug,meas)}; /* ancien bundle : pas de marges */
       saCm=0;

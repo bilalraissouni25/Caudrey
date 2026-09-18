@@ -1,6 +1,6 @@
-const CACHE="atelier-couture-v31";
+const CACHE="atelier-couture-v34";
 const SHARE="atelier-share";
-const ASSETS=["./","./index.html","./app.libimg.js","./app.fs.bundle.js","./app.fsinfo.js","./app.fsx2.js","./app.v6.js","./app.store.js","./app.profiles.js","./app.composer.js","./app.elements.js","./app.elements2.js","./app.patterns2.js","./app.motifs.js","./app.freesewing.js","./app.illus.js","./app.gemini.js","./app.studio2.js","./app.fsmore.js","./app.print.js","./app.share.js","./app.guide.js","./app.atelier.js","./app.mesures.js","./app.accueil.js","./vendor/jspdf.umd.min.js","./vendor/svg2pdf.umd.min.js","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
+const ASSETS=["./","./index.html","./app.libimg.js","./app.fs.bundle.js","./app.fsinfo.js","./app.fsx2.js","./app.v6.js","./app.store.js","./app.profiles.js","./app.composer.js","./app.elements.js","./app.elements2.js","./app.patterns2.js","./app.motifs.js","./app.freesewing.js","./app.illus.js","./app.gemini.js","./app.studio2.js","./app.fsmore.js","./app.print.js","./app.share.js","./app.guide.js","./app.atelier.js","./app.mesures.js","./app.accueil.js","./app.corps.js","./app.flat.js","./app.techpack.js","./vendor/jspdf.umd.min.js","./vendor/svg2pdf.umd.min.js","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 
 /* On met en cache fichier par fichier : un seul fichier manquant ne doit pas
    faire échouer toute l'installation (sinon plus de hors-ligne ni de partage). */

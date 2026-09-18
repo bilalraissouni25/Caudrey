@@ -1,7 +1,7 @@
 # Mon Atelier Couture — État du projet (note de reprise)
 
 > À lire en premier pour reprendre le travail, quel que soit le modèle / l'assistant.
-> Dernière mise à jour : 14 septembre 2026 — Studio v2 livré.
+> Dernière mise à jour : 18 septembre 2026 — Studio : dessin technique, fiche atelier PDF, silhouette à ses mesures (étages 1, 2, 4 et la moitié du 3).
 
 ## Contexte
 - Web-app PWA « Atelier Herrgott / Lenuf designs », vanilla JS (pas de build), hébergée sur GitHub Pages, dépôt `Caudrey`.
@@ -26,6 +26,9 @@
 | `app.fs.bundle.js` | **Bundle FreeSewing v4.10.2 recompilé (16/09/2026) : 68 modèles**, API `FS.draft` (rétro-compatible), `FS.draftSvg`, `FS.info`, `FS.base`, annotations traduites en français. Source du bundle : `build/entry.mjs`. |
 | `app.fsinfo.js`, `app.fsx2.js`, `app.freesewing.js`, `app.patterns2.js` | Pages patron, génération sur mesure, bibliothèque, métadonnées des 12 modèles historiques. |
 | `app.fsmore.js` | **Nouveau** : catalogue FR des 68 modèles (type, niveau, description), remplissage du sélecteur groupé, fiches d'info générées depuis le bundle, vignettes de patron (cache mémoire + rendu à la demande). |
+| `app.flat.js` | **Nouveau (18/09/2026)** : vue « Dessin technique » du Studio — dessin du vêtement construit depuis le patron, options paramétriques, cotes du vêtement fini, export SVG/PNG. Surcharge `fsGenerate()`. |
+| `app.corps.js` | **Nouveau (18/09/2026)** : silhouette paramétrique à ses mesures, en millimètres, superposable au dessin technique ; sert aussi de mannequin au Studio composer. |
+| `app.techpack.js` | **Nouveau (18/09/2026)** : fiche atelier PDF 3 pages (dessin technique, nomenclature, plan de coupe et métrage, notes). Dépend de `app.flat.js` et des utilitaires de `app.print.js`. |
 | `app.print.js` | **Nouveau** : PDF du patron pavé en A4/A0 — page de garde avec carré témoin 5 cm, plan d'assemblage, repères de collage, marges de couture, patron coté. Remplace `fsPrint()` / `patPrint()` et la feuille de style d'aperçu `styleFsSvg()`. |
 | `vendor/jspdf.umd.min.js`, `vendor/svg2pdf.umd.min.js` | **Nouveau** : jsPDF 2.5.2 + svg2pdf.js 2.5.0 (MIT), chargés à la demande par `app.print.js`. |
 | `build/entry.mjs` | Source du bundle FreeSewing (voir « Reconstruire le bundle »). |
@@ -95,6 +98,35 @@ Testé en navigateur headless (Playwright) : ajout d'éléments, calques, magné
 - Les photos d'étape passent par `save()` donc atterrissent automatiquement dans IndexedDB.
 - Testé : les trois profils de réponses donnent des recommandations cohérentes, création de projet, cochage, chrono, note, photo, retour au carnet synchronisé, et tout survit au rechargement.
 
+### Dessin technique — étages 1 et 2 du plan Studio (18/09/2026)
+- `app.flat.js` (chargé en dernier) : nouvel onglet **« Dessin technique »** du Studio (`#studioTech`, 4e bouton de `#studioMode`). Le dessin n'est plus composé d'éléments décoratifs : il est **construit à partir du vrai patron**. Pour chaque pièce, `FS.draftSvg(design,{only:[part],complete:true,sa:0})` ; on extrait le plus long chemin `class="fabric"` (le contour tissu), on repère la ligne de pli au marqueur `cutonfold`, et on reflète la pièce par `transform="translate(2·foldX,0) scale(-1,1)"` — aucun parsing de chemin, donc la symétrie est exacte.
+- Deux vues : **Vêtement** (devant + dos, manches accrochées à l'emmanchure réelle) et **Planche de pièces** (toutes les pièces nommées, « au pli » signalé). Les bas et accessoires (jupe, pantalon) basculent d'office sur la planche : leur forme à plat ne ressemble pas au vêtement porté, l'afficher en « vêtement » serait un mensonge.
+- Placement des manches : `flatArmhole()` échantillonne le contour (`getPointAtLength`, 300 points) pour trouver le point d'épaule et le dessous de bras ; la manche est accrochée au milieu de cette corde, inclinée de 32°, et **réduite de moitié en largeur** (la pièce est la manche entière déroulée, à plat on n'en voit qu'une face). Le corps est rempli en blanc pour masquer la tête de manche, comme sur un vrai dessin technique.
+- **Options paramétriques** (étage 2) : `flatOptions()` lit `FS.info(design).options` et génère jusqu'à 14 curseurs/cases (aisances, longueurs, profondeur d'encolure…), libellés en français via `FLAT_OPT_FR`. Chaque réglage redessine le vêtement (débounce 320 ms) et met à jour les **cotes du vêtement fini** (largeur à plat, longueur, tour correspondant, longueur de manche) lues sur les pièces, pas estimées.
+- Les pourcentages partent au moteur **en fraction** (`valeur/100`) : `normalizeOptions()` du bundle ne divise que les valeurs > 1, envoyer 0,5 % serait sinon compris comme 50 %.
+- Les réglages suivent le patron : `fsGenerate()` est surchargé (il passe désormais par `FS.draftSvg` avec `options`) et `fsPrintGo()` reprend `window._tkOpts` — donc le PDF imprimé est bien le vêtement réglé dans le Studio.
+- Pièces héritées : `FS.info().parts` contient aussi les pièces du modèle parent (`titan.front` pour Paco, `brian.base` pour Teagan). On écarte une pièce héritée **seulement si le modèle a la sienne du même nom** — filtrer strictement sur le préfixe casse les modèles qui héritent tout (Simone n'a en propre que `simone.fbaFront`).
+- Testé (Playwright) : 62 modèles dans le sélecteur, Teagan/Sven/Hugo/Breanna en vue vêtement, Sandy/Paco/Shin/Simone en planche, curseur d'aisance poitrine au maximum → largeur à plat 58 → 63 cm, aucune erreur console. Génération 40 à 400 ms selon le modèle.
+- Limites connues : la manche est un dessin honnête mais simplifié (pas de pli de coude, hem droit) ; Paco ne rend pas sa pièce dos seule (pas de chemin `fabric` quand on la tire isolément) ; les blocs de base (Breanna) ont des manches longues qui partent loin du corps.
+
+### Versions & fiche atelier — fin de l'étage 2 et étage 4 (18/09/2026)
+- **Mes versions** (`state.variantes = [{id,slug,nom,vals,date}]`) : « Enregistrer cette version » garde les réglages du modèle courant ; la liste sous le panneau d'options recharge ou supprime une version. **Comparateur** : « Comparer » affiche côte à côte les réglages en cours et les deux dernières versions du modèle, chacun avec ses trois cotes principales.
+- **Piège corrigé** : `uid()` rend un nombre, l'attribut `onclick` repasse une chaîne — la comparaison `x.id===id` échouait en silence et le clic ne chargeait rien. Comparer avec `String(...)` partout où un id transite par le HTML.
+- **File d'attente de rendu** : `tkDraw()` ignorait une demande arrivée pendant un rendu (`TK.busy`), donc un clic pendant le dessin initial était perdu. Désormais `TK._encore` + `tkFini()` rejouent la dernière demande.
+- `app.techpack.js` — **fiche atelier PDF** (bouton « Fiche atelier (PDF) » de la vue technique), 3 pages A4 : 1) dessin technique devant/dos à l'échelle, mesures du vêtement fini, réglages utilisés, et un bloc de lignes vierges pour écrire à la main ; 2) planche des pièces + nomenclature (pièce, consigne de coupe réelle lue dans le patron, largeur, hauteur) ; 3) plan de coupe dessiné, métrage, fournitures, notes de construction.
+- **Plan de coupe** : rangement par étagères des pièces (quantité déduite de la consigne « Couper 2 en miroir »), sur un tissu plié en deux à la laize choisie, 5 mm de marge autour de chaque pièce. Teagan en 140 cm → 1,2 m. C'est une estimation honnête, pas un placement optimisé : la fiche le dit et conseille 10 à 15 % de plus pour un tissu à sens.
+- **Consigne de coupe** : le SVG d'une pièce contient plusieurs textes commençant par « Couper » — le droit-fil (« Couper au pli — droit-fil ») arrive avant la vraie consigne. On cherche d'abord `Couper <nombre>`, le reste en secours.
+- Le PDF réutilise `prReady()` / `prSvgEl()` / `prHost()` d'`app.print.js` : pas de seconde copie de jsPDF.
+- Testé (Playwright, PDF rendu en image) : les trois pages sont justes, aucune erreur console, enregistrement + rechargement + chargement d'une version → 58 cm → 63 cm de largeur à plat.
+
+### La silhouette à ses mesures — étage 3, première moitié (18/09/2026)
+- `app.corps.js` : silhouette de face construite à partir des mesures du profil, **dans la même unité que les patrons (1 unité = 1 mm)**. Elle se superpose donc au dessin technique sans aucune mise à l'échelle : on voit où tombe l'ourlet, où s'arrête la manche, si l'encolure est trop large.
+- Largeur de face déduite d'une circonférence par `circ / 5.8` (section elliptique). Les niveaux (poitrine, taille, hanches, genou, sol) viennent des mesures réelles ; ce qui manque est estimé à partir du reste via `FS.base`, jamais tiré au hasard. `corpsMesures().reelles` compte les mesures réellement prises.
+- Bouton **« Silhouette »** dans la vue technique (`window.FLAT_CORPS`) : le corps est posé derrière le vêtement, l'axe du corps sur la ligne de pli, le creux du cou sur le haut de la pièce devant (pour un bas, c'est la ligne de taille qui sert de repère). La fiche atelier PDF suit automatiquement, puisqu'elle utilise `flatSvg()`.
+- Le mannequin du Studio « Composer » (`manneSVG()` dans `app.studio2.js`) délègue maintenant à `corpsSvg()` quand `app.corps.js` est chargé : le fond de croquis est lui aussi à ses mesures. **Non testable ici** (Fabric.js vient de cdnjs, bloqué depuis l'environnement de dev) — la délégation est dans un `try/catch` qui retombe sur l'ancien mannequin.
+- Manches : la tête de manche est enfoncée de 22 % de la hauteur de la pièce sous le corps du vêtement, et les manches sont remplies de blanc — sinon la courbe de tête de manche dépasse l'épaule et le dessin ressemble à un décolleté cut-out.
+- Reste de l'étage 3 : les **calques métier** (tissu principal, doublure, surpiqûres, mercerie, annotations) dans le Studio composer — non fait, c'est une refonte du panneau Calques d'`app.studio2.js`.
+
 ### Partage & import d'inspirations (16/09/2026)
 - **Android** : `share_target` passé en **POST multipart** (`./share-target`, champ fichier `image`). Le service worker intercepte le POST, range l'image et les métadonnées dans le cache `atelier-share` (clés `__shared-image` / `__shared-meta`, URL absolues calculées depuis `registration.scope`), puis redirige (303) vers `index.html?shared=1`. L'app consomme et vide ce cache au chargement (`consumeSharedPayload`). Testé de bout en bout : POST → 200 → image importée, titre et plateforme conservés.
 - **iPhone** : iOS ne permet pas à une PWA d'être cible de partage. Parcours retenu : un **raccourci iOS** « Mon Atelier » dans la feuille de partage, qui copie l'élément puis ouvre `index.html?paste=1` ; l'app affiche alors un grand bouton « Coller » (lecture presse-papiers sur geste utilisateur). Les étapes de création du raccourci sont dans l'app : bouton « Menu Partager › » de l'écran Inspirations (`shareHelp()`), onglets iPhone / Android.
@@ -147,11 +179,11 @@ Ajouter un modèle = un `import` + une entrée dans l'objet `D` d'`entry.mjs`, p
 3. Réuploader sur `Caudrey` (GitHub Pages).
 4. Recharger l'app : avec le SW v24+, le rechargement est automatique ; sinon, une dernière fois, « vider les données du site » ou fenêtre privée.
 
-## Dernier upload à faire (état au 17/09/2026)
-Modifiés : `index.html`, `sw.js` (cache v30), `manifest.webmanifest`, `app.fs.bundle.js` (reconstruit en v4).
-Nouveaux : `app.store.js`, `app.guide.js`, `app.atelier.js`, `app.mesures.js`, `app.accueil.js`, `app.print.js`, `app.fsmore.js`, `app.share.js`, `vendor/jspdf.umd.min.js`, `vendor/svg2pdf.umd.min.js`, `build/entry.mjs`.
+## Dernier upload à faire (état au 18/09/2026)
+Modifiés : `app.studio2.js` (le mannequin délègue à `app.corps.js`), `index.html`, `sw.js` (**cache v34**), `manifest.webmanifest`, `app.fs.bundle.js` (reconstruit en v4), `app.print.js` (reprend les options du dessin technique).
+Nouveaux : `app.flat.js`, `app.corps.js`, `app.techpack.js`, `app.store.js`, `app.guide.js`, `app.atelier.js`, `app.mesures.js`, `app.accueil.js`, `app.print.js`, `app.fsmore.js`, `app.share.js`, `vendor/jspdf.umd.min.js`, `vendor/svg2pdf.umd.min.js`, `build/entry.mjs`.
 
-**Ordre de chargement des scripts** (important, les modules se surchargent entre eux) : `app.v6.js` → `app.store.js` → `app.profiles.js` → composer/elements → `app.fsinfo.js` → `app.fsx2.js` → `app.patterns2.js` → motifs → freesewing → illus → gemini → `app.studio2.js` → `app.fsmore.js` → `app.print.js` → `app.share.js` → `app.guide.js` → `app.atelier.js` → `app.mesures.js` → `app.accueil.js`.
+**Ordre de chargement des scripts** (important, les modules se surchargent entre eux) : `app.v6.js` → `app.store.js` → `app.profiles.js` → composer/elements → `app.fsinfo.js` → `app.fsx2.js` → `app.patterns2.js` → motifs → freesewing → illus → gemini → `app.studio2.js` → `app.fsmore.js` → `app.print.js` → `app.share.js` → `app.guide.js` → `app.atelier.js` → `app.mesures.js` → `app.accueil.js` → `app.corps.js` → `app.flat.js` → `app.techpack.js`.
 Toujours en attente du 14/09 : `app.studio2.js`, `app.elements2.js`.
 À supprimer du dépôt : `app.fsexamples.js`, `app.fsx.js`.
 Le dossier `vendor/` doit être uploadé tel quel (l'app charge `vendor/jspdf.umd.min.js` à la volée).

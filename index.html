@@ -281,6 +281,29 @@
   .st-design .bd .acts button:hover{background:var(--surface2);color:var(--accent);}
   @media(max-width:1100px){.st-grid{grid-template-columns:200px minmax(0,1fr);}.st-side{grid-column:1 / -1;flex-direction:row;flex-wrap:wrap;}.st-side .st-panel{flex:1;min-width:240px;}}
   @media(max-width:760px){.st-grid{grid-template-columns:1fr;}.st-els{max-height:220px;}}
+  /* dessin technique */
+  .tk-grid{display:grid;grid-template-columns:260px minmax(0,1fr) 230px;gap:16px;align-items:start;}
+  .tk-opts{display:flex;flex-direction:column;gap:12px;max-height:600px;overflow:auto;}
+  .tk-opt input[type=range]{width:100%;}
+  .tk-opt .fld{display:flex;justify-content:space-between;gap:8px;}
+  .tk-wrap{background:#fff;min-height:420px;padding:18px;overflow:auto;}
+  .tk-svg svg{display:block;max-height:640px;margin:0 auto;}
+  .tk-vers{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
+  .tk-ver{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;cursor:pointer;}
+  .tk-ver:hover{border-color:var(--accent);}
+  .tk-ver .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tk-ver button{background:none;border:none;color:var(--muted);padding:2px 4px;border-radius:4px;font-size:13px;}
+  .tk-ver button:hover{background:var(--surface2);color:var(--accent);}
+  .tk-cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+  .tk-cmp .col{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;}
+  .tk-cmp .col h4{font-size:13px;margin:0 0 6px;}
+  .tk-cmp .col svg{max-height:300px;display:block;margin:0 auto;}
+  .tk-cmp .col .lst{font-size:11.5px;color:var(--muted);margin-top:8px;}
+  .tk-cotes{font-size:13px;}
+  .tk-cote{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .tk-cote:last-of-type{border-bottom:none;}
+  @media(max-width:1100px){.tk-grid{grid-template-columns:240px minmax(0,1fr);}}
+  @media(max-width:760px){.tk-grid{grid-template-columns:1fr;}}
   @media(max-width:860px){.studiogrid{grid-template-columns:1fr;}}
   @media(max-width:760px){
     .app{flex-direction:column;}
@@ -416,7 +439,48 @@
       <div class="seg" id="studioMode">
         <button class="on" data-s="composer">Composer (éléments)</button>
         <button data-s="compose">Gabarit paramétrique</button>
+        <button data-s="tech">Dessin technique</button>
         <button data-s="draw">Dessiner</button>
+      </div>
+
+      <div id="studioTech" style="display:none;">
+        <div class="card" style="margin-bottom:14px;">
+          <div class="row">
+            <div><label class="fld">Modèle</label><select id="tkDesign"></select></div>
+            <div><label class="fld">Vue</label><div class="seg" id="tkMode" style="margin:0;"><button class="on" data-m="assemble">Vêtement</button><button data-m="pieces">Planche de pièces</button></div></div>
+            <div style="flex:0 0 auto;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;">
+              <button class="btn" onclick="tkDraw()">Redessiner</button>
+              <button class="btn ghost sm st-tog" id="tkCorpsBtn" onclick="tkCorps()" title="Poser le vêtement sur une silhouette à tes mesures">Silhouette</button>
+              <button class="btn ghost sm" onclick="tkReset()">Réglages d'origine</button>
+            </div>
+          </div>
+          <p class="muted" id="tkNote" style="font-size:13px;margin:10px 0 0;"></p>
+        </div>
+        <div class="tk-grid">
+          <div class="card st-panel">
+            <div class="st-ph"><span>Options du modèle</span><span class="muted" id="tkOptCount"></span></div>
+            <div id="tkOpts" class="tk-opts"></div>
+            <div class="st-mini" style="margin-top:10px;">
+              <button class="btn ghost sm" onclick="tkSaveVersion()">Enregistrer cette version</button>
+              <button class="btn ghost sm" onclick="tkCompare()">Comparer</button>
+            </div>
+            <div id="tkVers" class="tk-vers"></div>
+          </div>
+          <div>
+            <div class="draw-wrap tk-wrap" id="tkWrap"></div>
+            <div class="st-actions">
+              <button class="btn ghost sm" onclick="tkExport('svg')">Export SVG</button>
+              <button class="btn ghost sm" onclick="tkExport('png')">Export PNG</button>
+              <button class="btn ghost sm" onclick="tkToCarnet()">Au carnet</button>
+              <button class="btn ghost sm" id="tkFicheBtn" onclick="tkFiche()">Fiche atelier (PDF)</button>
+              <button class="btn sm" onclick="tkToPatron()">Créer le patron</button>
+            </div>
+          </div>
+          <div class="card st-panel">
+            <div class="st-ph"><span>Cotes du vêtement</span></div>
+            <div id="tkCotes" class="tk-cotes"></div>
+          </div>
+        </div>
       </div>
 
       <div id="studioComposer">
@@ -824,5 +888,8 @@
 <script src="app.atelier.js"></script>
 <script src="app.mesures.js"></script>
 <script src="app.accueil.js"></script>
+<script src="app.corps.js"></script>
+<script src="app.flat.js"></script>
+<script src="app.techpack.js"></script>
 </body>
 </html>
