@@ -123,6 +123,12 @@ function flatPiece(design,part,meas,opts){
   var fab=paths.filter(function(p){ return /\bfabric\b/.test(p.cls)&&!/\bsa\b/.test(p.cls); })
                .sort(function(a,b){ return b.d.length-a.d.length; })[0];
   if(!fab)return null;
+  /* certains modèles (Bibi…) tracent le contour en plusieurs morceaux : on les raboute */
+  if(!/z\s*$/i.test(fab.d.trim())){
+    var fabs=paths.filter(function(p){ return /\bfabric\b/.test(p.cls)&&!/\bsa\b/.test(p.cls); });
+    var ch=fabs.length>1?flatChainer(fabs.map(function(p){ return p.d; })):null;
+    if(ch)fab={d:ch};
+  }
   out.d=fab.d;
   out.bbox=flatBBox(fab.d);
   out.pts=flatSample(fab.d);
@@ -144,8 +150,55 @@ function flatPiece(design,part,meas,opts){
     var fb=flatBBox(fold.d);
     /* pli vertical si la ligne est plus haute que large */
     out.fold=(fb.h>=fb.w)?{axe:"v",v:fb.x+fb.w/2}:{axe:"h",v:fb.y+fb.h/2};
+    /* le marqueur de pli est dessiné à côté du bord : on recale le pli sur le bord le plus proche */
+    if(out.fold.axe==="v"&&out.bbox){
+      var bx=out.bbox, dg=Math.abs(out.fold.v-bx.x), dd=Math.abs(out.fold.v-(bx.x+bx.w));
+      if(Math.min(dg,dd)<25)out.fold.v=(dg<=dd)?bx.x:bx.x+bx.w;
+    }
   }
   return out;
+}
+
+/* tracés absolus M/L/C -> {a:point de départ, s:[{t,p:[...]}]} */
+function flatParse(d){
+  var tok=d.match(/[MLCZmlcz]|-?\d*\.?\d+(?:e[-+]?\d+)?/g)||[], cmd="", n=[], o=null, bad=false;
+  function fl(){
+    if(!cmd)return;
+    var P=[]; for(var i=0;i+1<n.length;i+=2)P.push([n[i],n[i+1]]);
+    if(cmd==="M"){ if(o){ bad=true; return; } o={a:P[0],s:[]}; P.slice(1).forEach(function(q){ o.s.push({t:"L",p:[q]}); }); }
+    else if(cmd==="L")P.forEach(function(q){ o.s.push({t:"L",p:[q]}); });
+    else if(cmd==="C")for(var j=0;j+2<P.length;j+=3)o.s.push({t:"C",p:[P[j],P[j+1],P[j+2]]});
+    else if(/[Zz]/.test(cmd)){}
+    else bad=true;
+  }
+  tok.forEach(function(t){ if(/^[A-Za-z]$/.test(t)){ fl(); cmd=t; n=[]; } else n.push(parseFloat(t)); });
+  fl();
+  return (bad||!o)?null:o;
+}
+function flatFin(o){ return o.s.length?o.s[o.s.length-1].p[o.s[o.s.length-1].p.length-1]:o.a; }
+function flatInverser(o){
+  var pts=[o.a]; o.s.forEach(function(g){ pts.push(g.p[g.p.length-1]); });
+  var r={a:pts[pts.length-1],s:[]};
+  for(var i=o.s.length-1;i>=0;i--){
+    var g=o.s[i], dep=pts[i];
+    r.s.push(g.t==="C"?{t:"C",p:[g.p[1],g.p[0],dep]}:{t:"L",p:[dep]});
+  }
+  return r;
+}
+function flatChainer(ds){
+  var L=ds.map(flatParse).filter(Boolean); if(L.length<2)return null;
+  function pr(a,b){ return Math.abs(a[0]-b[0])<1.5&&Math.abs(a[1]-b[1])<1.5; }
+  var cur=L.shift(), guard=0;
+  while(L.length&&guard++<40){
+    var fin=flatFin(cur), k=-1, inv=false;
+    for(var i=0;i<L.length;i++){ if(pr(L[i].a,fin)){k=i;break;} if(pr(flatFin(L[i]),fin)){k=i;inv=true;break;} }
+    if(k<0)break;
+    var nx=L.splice(k,1)[0]; if(inv)nx=flatInverser(nx);
+    cur.s=cur.s.concat(nx.s);
+  }
+  if(!pr(flatFin(cur),cur.a)||cur.s.length<3)return null;
+  function f(q){ return q[0].toFixed(2)+","+q[1].toFixed(2); }
+  return "M "+f(cur.a)+" "+cur.s.map(function(g){ return g.t+" "+g.p.map(f).join(" "); }).join(" ")+" z";
 }
 
 /* ---------- construction de la planche ---------- */
@@ -163,16 +216,47 @@ function flatBuild(design,meas,opts){
   return {design:design, type:type, pieces:pieces};
 }
 
+/* déforme un tracé absolu (M, L, C, Z — ce que produit FreeSewing) point par point */
+function flatWarpD(d,f){
+  var out=[], cmd="", nums=[];
+  var tok=d.match(/[MLCZmlcz]|-?\d*\.?\d+(?:e[-+]?\d+)?/g)||[];
+  function flush(){
+    if(!cmd)return;
+    if(/[Zz]/.test(cmd)){ out.push("z"); return; }
+    var pts=[];
+    for(var i=0;i+1<nums.length;i+=2){ var x=nums[i], y=nums[i+1]; pts.push(f(x,y).toFixed(2)+","+y.toFixed(2)); }
+    out.push(cmd.toUpperCase()+" "+pts.join(" "));
+  }
+  tok.forEach(function(t){ if(/^[A-Za-z]$/.test(t)){ flush(); cmd=t; nums=[]; } else nums.push(parseFloat(t)); });
+  flush();
+  return out.join(" ");
+}
 /* un groupe SVG pour une pièce, reflétée si elle est coupée au pli */
 function flatGroup(p,opt){
   opt=opt||{};
-  var d=esc(p.d);
-  var trait='fill="'+(opt.fill||"none")+'" stroke="#111" stroke-width="'+(opt.trait||2.2)+'" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"';
-  var g='<path d="'+d+'" '+trait+'/>';
+  var d=esc(window.FLAT_WARP?flatWarpD(p.d,window.FLAT_WARP):p.d);
+  var fl=opt.fill||"none"; if(window.FLAT_PORTEE&&fl==="none")fl="#fff";
+  var trait='fill="'+fl+'" stroke="#111" stroke-width="'+(opt.trait||2.2)+'" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"';
+  var dr=' data-role="'+(p.role||"")+'"';   /* sert au tissu de contraste, pièce par pièce */
+  var g='<path'+dr+' d="'+d+'" '+trait+'/>';
+  /* vue portée : un modelé léger, sombre sur les côtés du corps, clair au milieu */
+  var ombre="";
+  if(window.FLAT_PORTEE){
+    var gid="poC";
+    if(p.fold&&p.fold.axe==="v")gid=(p.fold.v>p.bbox.x+p.bbox.w/2)?"poL":"poR";   /* le côté loin du pli est le flanc */
+    ombre='<path d="'+d+'" fill="url(#'+gid+')" stroke="none" pointer-events="none"/>';
+    g+=ombre;
+  }
   if(p.fold&&p.fold.axe==="v"){
-    g+='<g transform="translate('+(2*p.fold.v).toFixed(2)+',0) scale(-1,1)"><path d="'+d+'" '+trait+'/></g>';
+    if(window.FLAT_PORTEE)opt.pli=false;
+    g+='<g transform="translate('+(2*p.fold.v).toFixed(2)+',0) scale(-1,1)"><path'+dr+' d="'+d+'" '+trait+'/>'+ombre+'</g>';
     /* le bord de pli est dessiné deux fois : on l'efface, il n'existe pas sur le vêtement */
     var y1=(p.bbox.y-2).toFixed(2), y2=(p.bbox.y+p.bbox.h+2).toFixed(2), fx=p.fold.v.toFixed(2);
+    if(window.FLAT_PORTEE&&p.pts){
+      /* portée : on n'efface que le long du pli, sans déborder sur la silhouette */
+      var sur=p.pts.filter(function(q){ return Math.abs(q.x-p.fold.v)<1.5; }).map(function(q){ return q.y; });
+      if(sur.length>1){ y1=(Math.min.apply(null,sur)+1.5).toFixed(2); y2=(Math.max.apply(null,sur)-1.5).toFixed(2); }
+    }
     g+='<line x1="'+fx+'" y1="'+y1+'" x2="'+fx+'" y2="'+y2+'" stroke="#fff" stroke-width="'+((opt.trait||2.2)+2)+'" vector-effect="non-scaling-stroke"/>';
     if(opt.pli!==false)
       g+='<line x1="'+fx+'" y1="'+y1+'" x2="'+fx+'" y2="'+y2+
@@ -195,7 +279,12 @@ function flatAssemblable(board){
   if(!board)return false;
   /* bas et accessoires : les pièces à plat ne ressemblent pas au vêtement porté */
   if(board.type==="jupe"||board.type==="pantalon"||board.type==="accessoire")return false;
-  return board.pieces.some(function(p){ return p.role==="devant"||p.role==="dos"; });
+  /* plusieurs pièces devant (découpes princesse, devant droit/gauche, parementures) :
+     les juxtaposer donnerait un dessin faux — la planche de pièces est plus honnête */
+  var nd=board.pieces.filter(function(p){ return p.role==="devant"; }).length;
+  var nb=board.pieces.filter(function(p){ return p.role==="dos"; }).length;
+  if(nd>1||nb>1)return false;
+  return nd+nb>0;
 }
 
 /* ---------- vue assemblée (hauts, robes) ou planche de pièces ---------- */
@@ -213,38 +302,60 @@ function flatSvg(board,mode){
 
   function vue(principal,titre){
     if(!principal)return null;
-    var s=flatSpan(principal), g="", deb=0, corpsBox=null;
+    var s=flatSpan(principal), g="", gM="", deb=0, corpsBox=null, corpsLen=0;
     /* la silhouette à ses mesures, posée derrière le vêtement (même unité : le mm) */
     if(window.FLAT_CORPS&&typeof corpsSvgParts==="function"){
       try{
-        var cr=corpsSvgParts({});
+        var cr=corpsSvgParts(window.FLAT_CORPS_OPT||{});
         var cax=(principal.fold&&principal.fold.axe==="v")?principal.fold.v:(s.x+s.w/2);
         var cy=(principal.role==="devant"||principal.role==="dos")?s.y:(s.y-cr.M.yWaist);
-        g+='<g transform="translate('+cax.toFixed(1)+','+cy.toFixed(1)+')" opacity="0.6">'+cr.g+'</g>';
+        g+='<g transform="translate('+cax.toFixed(1)+','+cy.toFixed(1)+')" opacity="'+(window.FLAT_PORTEE?1:0.6)+'">'+cr.g+'</g>';
         corpsBox={x:cr.box.x+cax, y:cr.box.y+cy, w:cr.box.w, h:cr.box.h};
+        corpsLen=g.length;
       }catch(e){}
     }
     var pad=30;
     /* Manches : la pièce est la manche entière déroulée ; vue à plat on n'en voit
        que la moitié. On l'accroche par le milieu de sa tête au point d'épaule,
        inclinée vers l'extérieur, comme sur un dessin technique. */
+    /* vue portée : à plat, le vêtement montre la moitié de son tour ; porté, il s'enroule
+       autour du corps et, de face, on n'en voit que ≈ tour / 2,9 (le même rapport que la
+       silhouette, corpsDemi = tour / 5,8). On resserre donc la pièce autour de son axe :
+       rien aux épaules (la carrure se voit telle quelle), 0,69 dès le dessous de bras. */
+    var W=null;
+    if(window.FLAT_PORTEE){
+      var ahW=flatArmhole(principal);
+      var axW=(principal.fold&&principal.fold.axe==="v")?principal.fold.v:(s.x+s.w/2);
+      var yU=ahW?Math.max(ahW.U.y,ahW.S.y):(s.y+s.h*0.25);
+      W={ax:axW, y0:s.y, y1:yU, k:2/2.9};
+    }
+    function kW(y){ if(!W)return 1; if(y<=W.y0)return 1; if(y>=W.y1)return W.k; var t=(y-W.y0)/(W.y1-W.y0); t=t*t*(3-2*t); return 1+(W.k-1)*t; }
     if(manche){
       var ms=flatSpan(manche);
       var cx=(ms.x+ms.w/2).toFixed(2), cy=ms.y.toFixed(2);
-      var ang=32, r=ang*Math.PI/180;
+      var ang=window.FLAT_ANG||32, r=ang*Math.PI/180;
       var ah=flatArmhole(principal);
       var axe=ah?ah.axe:(s.x+s.w/2);
       var mx=ah?(Math.abs((ah.S.x+ah.U.x)/2-axe)):(s.w/2), my=ah?((ah.S.y+ah.U.y)/2):(s.y+s.h*0.15);
+      var sxM=0.5, tuck=(ms.h*0.22).toFixed(1);
+      if(W&&ah){
+        var dem=ms.w*0.33/2;
+        /* portée : la manche tombe le long du bras ; tête posée au point d'épaule,
+           largeur vue de face ≈ tour de manche / π */
+        mx=Math.abs(ah.S.x-axe)*kW(ah.S.y)+dem*0.55; my=ah.S.y+ms.h*0.02; sxM=0.33; tuck="0";
+      }
       var epX=axe+mx, epX2=axe-mx, epY=my;
       /* on enfonce la tête de manche sous le corps : sur un dessin technique,
          la couture d'emmanchure est la seule chose visible à cet endroit. */
-      var tuck=(ms.h*0.22).toFixed(1);
-      var inner='<g transform="translate(0,'+tuck+') scale(0.5,1) translate('+(-cx)+','+(-cy)+')">'+flatGroup(manche,{trait:2,pli:false,fill:"#fff"})+'</g>';
-      g+='<g transform="translate('+epX.toFixed(2)+','+epY.toFixed(2)+') rotate('+(-ang)+')">'+inner+'</g>';
-      g+='<g transform="translate('+epX2.toFixed(2)+','+epY.toFixed(2)+') scale(-1,1) rotate('+(-ang)+')">'+inner+'</g>';
+      var inner='<g transform="translate(0,'+tuck+') scale('+sxM+',1) translate('+(-cx)+','+(-cy)+')">'+flatGroup(manche,{trait:2,pli:false,fill:"#fff"})+'</g>';
+      gM='<g transform="translate('+epX.toFixed(2)+','+epY.toFixed(2)+') rotate('+(-ang)+')">'+inner+'</g>'+
+         '<g transform="translate('+epX2.toFixed(2)+','+epY.toFixed(2)+') scale(-1,1) rotate('+(-ang)+')">'+inner+'</g>';
+      if(!W)g+=gM;   /* à plat, sous le corps ; portée, par-dessus (la couture d'emmanchure se voit) */
       deb=ms.w*0.5*Math.cos(r)+ms.h*Math.sin(r)+10;
     }
-    g+=flatGroup(principal,{trait:2.6,fill:manche?"#fff":"none"});
+    window.FLAT_WARP=W?function(x,y){ return W.ax+(x-W.ax)*kW(y); }:null;
+    try{ g+=flatGroup(principal,{trait:2.6,fill:manche?"#fff":"none"}); } finally{ window.FLAT_WARP=null; }
+    if(W&&gM)g+=gM;
     var box={x:s.x-deb-pad, y:s.y-pad, w:s.w+deb*2+pad*2, h:s.h+pad*2};
     if(corpsBox){
       var x1=Math.min(box.x,corpsBox.x-10), x2=Math.max(box.x+box.w,corpsBox.x+corpsBox.w+10);
@@ -252,7 +363,7 @@ function flatSvg(board,mode){
       box={x:x1,y:y1,w:x2-x1,h:y2-y1};
     }
     if(manche){ var mh=flatSpan(manche).h, ah2=flatArmhole(principal);
-      box.h=Math.max(box.h, (ah2?(ah2.S.y+ah2.U.y)/2:s.y)+mh*Math.cos(32*Math.PI/180)+pad-box.y); }
+      box.h=Math.max(box.h, (ah2?(ah2.S.y+ah2.U.y)/2:s.y)+mh*Math.cos((window.FLAT_ANG||32)*Math.PI/180)+pad-box.y); }
     return {g:g, box:box, titre:titre};
   }
 
@@ -317,6 +428,39 @@ var FLAT_OPT_FR={
   necklineWidth:"Largeur d'encolure", armholeDepth:"Profondeur d'emmanchure",
   collarFactor:"Hauteur de col", hemWidth:"Largeur d'ourlet", waistbandWidth:"Largeur de ceinture",
   fullness:"Ampleur", flare:"Évasement", rise:"Hauteur de taille", legWidth:"Largeur de jambe"
+
+  /* ajout 19/09 : les options les plus visibles des 68 modèles */
+  ,acrossBackFactor:"Carrure dos", backNeckCutout:"Échancrure d'encolure dos", armholeDepthFactor:"Profondeur d'emmanchure",
+  draftForHighBust:"Tracer sur la poitrine haute", length:"Longueur", crossSeamCurveAngle:"Fourche dos : angle",
+  crossSeamCurveBend:"Fourche dos : courbure", crossSeamCurveStart:"Fourche dos : départ", fitWaist:"Ajuster à la taille",
+  crotchDrop:"Descente d'entrejambe", crotchSeamCurveAngle:"Fourche devant : angle", crotchSeamCurveBend:"Fourche devant : courbure",
+  crotchSeamCurveStart:"Fourche devant : départ", frontArmholeDeeper:"Emmanchure devant plus creusée", bulge:"Galbe",
+  size:"Taille", hem:"Ourlet", armholeDrop:"Descente d'emmanchure", lengthRatio:"Proportion de longueur", backRise:"Montant dos",
+  stretch:"Élasticité du tissu", cuffWidth:"Largeur du poignet", construction:"Construction", dart:"Pince",
+  dolmanSleeveLength:"Longueur de manche kimono", extraBustEase:"Aisance poitrine en plus", ease:"Aisance", waistband:"Ceinture",
+  armholeDartCurved:"Pince d'emmanchure courbe", armholeDartCurvePoint:"Pince d'emmanchure : point", armholeDartCurveWidth:"Pince d'emmanchure : largeur",
+  backOpening:"Ouverture dos", strapWidth:"Largeur de bretelle", backPocketDepth:"Profondeur de poche arrière",
+  backPocketWidth:"Largeur de poche arrière", beltLoops:"Passants", backArmholeCurvature:"Courbure d'emmanchure dos",
+  backArmholePitchDepth:"Repère d'emmanchure dos", backArmholeSlant:"Inclinaison d'emmanchure dos", backDartHeight:"Hauteur de pince dos",
+  backHemSlope:"Pente de l'ourlet dos", knotWidth:"Largeur du nœud", tipWidth:"Largeur de la pointe", widthRatio:"Proportion de largeur",
+  frontScyeDart:"Pince d'emmanchure devant", beltWidth:"Largeur de ceinture", buttonSpacingHorizontal:"Écart des boutons",
+  panels:"Panneaux", waistReduction:"Réduction à la taille", flyWidth:"Largeur de braguette", curvedDarts:"Pinces courbes",
+  headEase:"Aisance de tête", neckWidth:"Largeur d'encolure", pocket:"Poche", waistbandsize:"Hauteur de ceinture",
+  waistlowering:"Taille abaissée", waistreduction:"Réduction à la taille", armholeDartPosition:"Position de la pince d'emmanchure",
+  bustSpanEase:"Écart de poitrine", armLength:"Longueur de bras", fitKnee:"Ajuster au genou", elasticWidth:"Largeur d'élastique",
+  backCoverage:"Couvrance du dos", backDarts:"Pinces dos", headRatio:"Proportion de tête", widthBonus:"Largeur ajoutée",
+  backDip:"Descente du dos", backExposure:"Dos découvert", frontDip:"Descente du devant", frontExposure:"Devant découvert",
+  gussetPosition:"Position du gousset", gussetWidth:"Largeur du gousset", knitBindingWidth:"Largeur de la bande en maille",
+  necklineBend:"Courbure d'encolure", necklineDrop:"Descente d'encolure", shoulderStrapPlacement:"Position des bretelles",
+  shoulderStrapWidth:"Largeur des bretelles", stretchFactor:"Élasticité", bibLength:"Longueur de bavette", bibWidth:"Largeur de bavette",
+  chestDepth:"Profondeur de poitrine", collarBandHeight:"Hauteur du pied de col", legBonus:"Longueur de jambe ajoutée",
+  legStretch:"Élasticité en largeur", backDrop:"Descente dos", frontDrop:"Descente devant", frontRise:"Montant devant",
+  hipRise:"Montant aux hanches", cuffStyle:"Style de poignet", ventLength:"Longueur de fente", waistbandBelowWaist:"Ceinture sous la taille",
+  articulatedKnee:"Genou articulé", armholeWidthBack:"Largeur d'emmanchure dos", armholeWidthFront:"Largeur d'emmanchure devant",
+  bottomWidthBonus:"Ampleur du bas", bustEase:"Aisance poitrine", necklineCoverage:"Couvrance de l'encolure",
+  sleeveLength:"Longueur de manche", sleevecapHeight:"Hauteur de tête de manche", drapeAngle:"Angle du drapé", curve:"Courbe",
+  shoulderEase:"Aisance épaules", shoulderSlopeReduction:"Pente d'épaule réduite", sleeveWidth:"Largeur de manche",
+  collarEase:"Aisance d'encolure", lengthBelowWaist:"Longueur sous la taille", torsoLength:"Longueur du buste"
 };
 function flatOptFr(k){
   if(FLAT_OPT_FR[k])return FLAT_OPT_FR[k];
@@ -464,12 +608,9 @@ function tkDraw(){
       var board=flatBuild(TK.slug, meas, tkEngineOpts());
       TK.board=board;
       if(!board){ wrap.innerHTML='<p class="muted" style="padding:24px;">Ce modèle n\'a pas pu être dessiné avec tes mesures. Complète ton profil, ou choisis-en un autre.</p>'; TK.busy=false; return; }
-      var forcee=(TK.mode==="assemble"&&!flatAssemblable(board));
-      if(forcee){
-        TK.mode="pieces";
-        document.querySelectorAll("#tkMode button").forEach(function(n){ n.classList.toggle("on",n.dataset.m==="pieces"); });
-      }
-      wrap.innerHTML='<div class="tk-svg">'+flatSvg(board,TK.mode)+'</div>';
+      var forcee=(TK.mode!=="pieces"&&!flatAssemblable(board));
+      /* on garde le choix de vue : le modèle suivant pourra de nouveau s'afficher assemblé ou porté */
+      wrap.innerHTML='<div class="tk-svg">'+flatSvg(board,forcee?"pieces":TK.mode)+'</div>';
       tkCotes();
       if(forcee&&note){ note.textContent="Ce modèle se lit mieux pièce par pièce : sa forme à plat n'a rien à voir avec sa silhouette portée. Pièces du patron de « "+tkLabel(TK.slug)+" », à tes mesures."; tkFini(); return; }
       if(note)note.textContent="Dessin construit à partir du patron réel de « "+tkLabel(TK.slug)+" », à tes mesures. Chaque trait est une couture ou un bord du vêtement.";

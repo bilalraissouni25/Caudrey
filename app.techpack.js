@@ -242,6 +242,7 @@ function tkFiche(){
     var v=TK.vals[d.k];
     reglages.push([flatOptFr(d.k), d.type==="pct"?(Math.round(v)+" %"):(d.type==="deg"?Math.round(v)+"°":String(v))]);
   });
+  if(TK.tissu)reglages.unshift(["Tissu", TK.tissu.nom]);
   var fs=(typeof FSALL!=="undefined")?FSALL.filter(function(d){return d.slug===TK.slug;})[0]:null;
   tpBuild({
     board:TK.board, slug:TK.slug, label:tkLabel(TK.slug),

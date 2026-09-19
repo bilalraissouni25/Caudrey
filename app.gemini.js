@@ -1,13 +1,17 @@
 "use strict";
+/* Modèles mis à jour le 19/09/2026 : gemini-1.5-flash et gemini-2.0-flash-preview-image-generation
+   ont été arrêtés par Google, claude-3-5-haiku retiré par Anthropic le 19/02/2026.
+   Vérifier https://ai.google.dev/gemini-api/docs/deprecations et
+   https://platform.claude.com/docs/en/about-claude/model-deprecations au moindre souci. */
 /* ===== Support Google Gemini (texte, vision, image) — surcharge callText/callVision/cmpRenderAI ===== */
-var GEM_TEXT="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
-var GEM_IMG="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=";
+var GEM_TEXT="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
+var GEM_IMG="https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=";
 
 function callText(prompt){
   var prov=state.ai.provider,key=state.ai.key;
   if(prov==="gemini")return fetch(GEM_TEXT+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;var c=d.candidates&&d.candidates[0];if(!c)throw "réponse vide";return (c.content.parts||[]).map(function(p){return p.text||"";}).join("");});
   if(prov==="openai")return fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model:"gpt-4o-mini",messages:[{role:"user",content:prompt}],max_tokens:600})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.choices[0].message.content;});
-  if(prov==="anthropic")return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-3-5-haiku-latest",max_tokens:600,messages:[{role:"user",content:prompt}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.content[0].text;});
+  if(prov==="anthropic")return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-4-5",max_tokens:600,messages:[{role:"user",content:prompt}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.content[0].text;});
   return Promise.reject("fournisseur");
 }
 function callVision(prompt,imgUrl){
@@ -17,10 +21,10 @@ function callVision(prompt,imgUrl){
     if(!mm)return Promise.reject("Gemini lit les images uploadées (data) — pour un lien, importe l'image.");
     return fetch(GEM_TEXT+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:mm[1],data:mm[2]}}]}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;var c=d.candidates&&d.candidates[0];if(!c)throw "réponse vide";return (c.content.parts||[]).map(function(p){return p.text||"";}).join("");});
   }
-  if(prov==="openai")return fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model:"gpt-4o-mini",max_tokens:200,messages:[{role:"user",content:[{type:"text",text:prompt},{type:"image_url",image_url:{url:imgUrl}}]}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.choices[0].message.content;});
+  if(prov==="openai")return fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model:"gpt-4o-mini",max_tokens:700,messages:[{role:"user",content:[{type:"text",text:prompt},{type:"image_url",image_url:{url:imgUrl}}]}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.choices[0].message.content;});
   if(prov==="anthropic"){
     var m2=imgUrl.match(/^data:(.*?);base64,(.*)$/);var srcObj=m2?{type:"base64",media_type:m2[1],data:m2[2]}:{type:"url",url:imgUrl};
-    return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-3-5-haiku-latest",max_tokens:200,messages:[{role:"user",content:[{type:"image",source:srcObj},{type:"text",text:prompt}]}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.content[0].text;});
+    return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-4-5",max_tokens:700,messages:[{role:"user",content:[{type:"image",source:srcObj},{type:"text",text:prompt}]}]})}).then(function(r){return r.json();}).then(function(d){if(d.error)throw d.error.message;return d.content[0].text;});
   }
   return Promise.reject("fournisseur");
 }

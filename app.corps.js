@@ -83,7 +83,7 @@ function corpsSvgParts(opt){
   var M=opt.mesures||corpsMesures();
   var trait=opt.trait||"#b9afa8", ep=opt.ep||6;
   var d=corpsDemiPath(M), bras=corpsBras(M);
-  var st='fill="none" stroke="'+trait+'" stroke-width="'+ep+'" stroke-linejoin="round" stroke-linecap="round"';
+  var st='fill="'+(opt.fill||"none")+'" stroke="'+trait+'" stroke-width="'+ep+'" stroke-linejoin="round" stroke-linecap="round"';
   var g='<g>'
     + '<path d="'+d+'" '+st+'/>'
     + '<g transform="scale(-1,1)"><path d="'+d+'" '+st+'/></g>';
